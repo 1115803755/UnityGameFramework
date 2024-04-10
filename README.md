@@ -10,7 +10,6 @@
 
 ---
 
-copy by hxd
 
 ## Game Framework 简介
 
