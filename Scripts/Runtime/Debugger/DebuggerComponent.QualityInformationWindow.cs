@@ -41,7 +41,11 @@ namespace UnityGameFramework.Runtime
                     DrawItem("Desired Color Space", QualitySettings.desiredColorSpace.ToString());
                     DrawItem("Max Queued Frames", QualitySettings.maxQueuedFrames.ToString());
                     DrawItem("Pixel Light Count", QualitySettings.pixelLightCount.ToString());
-                    DrawItem("Master Texture Limit", QualitySettings.masterTextureLimit.ToString());
+#if UNITY_2022_2_OR_NEWER
+                    DrawItem("Master Texture Limit", QualitySettings.globalTextureMipmapLimit.ToString());
+#else
+					DrawItem("Master Texture Limit", QualitySettings.masterTextureLimit.ToString());
+#endif
                     DrawItem("Anisotropic Filtering", QualitySettings.anisotropicFiltering.ToString());
                     DrawItem("Anti Aliasing", QualitySettings.antiAliasing.ToString());
 #if UNITY_5_5_OR_NEWER
