@@ -7,6 +7,7 @@
 
 using GameFramework;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace UnityGameFramework.Editor
@@ -35,6 +36,36 @@ namespace UnityGameFramework.Editor
 #endif
             "Assembly-CSharp-Editor",
         };
+
+        /// <summary>
+        /// 
+        /// </summary>
+        static Type()
+        {
+            List<string> tempRuntimeAssemblyNames = RuntimeAssemblyNames.ToList();
+            List<string> tempRuntimeOrEditorAssemblyNames = RuntimeOrEditorAssemblyNames.ToList();
+            foreach (System.Type type in Utility.Assembly.GetTypes())
+            {
+                foreach (FieldInfo fieldInfo in type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly))
+                {
+                    if (fieldInfo.FieldType == typeof(string) && fieldInfo.IsDefined(typeof(ReplenishTypeAttribute), false))
+                    {
+                        string v = (string)fieldInfo.GetValue(null);
+                        if (fieldInfo.GetCustomAttribute<ReplenishTypeAttribute>().runtime && !tempRuntimeAssemblyNames.Contains(v))
+                        {
+                            tempRuntimeAssemblyNames.Add(v);
+                        }
+                        if (!tempRuntimeOrEditorAssemblyNames.Contains(v))
+                        {
+                            tempRuntimeOrEditorAssemblyNames.Add(v);
+                        }
+                    }
+                }
+            }
+
+            RuntimeAssemblyNames = tempRuntimeAssemblyNames.ToArray();
+            RuntimeOrEditorAssemblyNames = tempRuntimeOrEditorAssemblyNames.ToArray();
+        }
 
         /// <summary>
         /// 获取配置路径。
