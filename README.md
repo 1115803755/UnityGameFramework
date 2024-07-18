@@ -106,4 +106,4 @@ Game Framework provides the following 19 builtin modules, and more will be devel
 
 ## EXTENSION 
 
-整合了https://github.com/1115803755/UGFExtensions拓展库的内容，集中管理更方便
+整合了![UGFExtensions](https://github.com/1115803755/UGFExtensions) 拓展库的内容，集中管理更方便
