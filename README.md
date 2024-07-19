@@ -101,3 +101,12 @@ Game Framework provides the following 19 builtin modules, and more will be devel
 18. **UI** - provides features to manage user interfaces and groups of UIs, such as showing or hiding, activating or deactivating, and depth changing. No matter the user uses the builtin uGUI in Unity or other UI plugins (NGUI, for example), he only needs to subclass 'UIFormLogic' and implement his own UI logic. The UIs could avoid being destroyed instantly after use, and hence be recycled for reuse.
 
 19. **Web Request** - provides features of short connections, supports GET and POST methods to send requests to the server and acquire the response data, and allows the user to send simultaneous requests to different servers.
+
+---
+
+## EXTENSION
+1. 新增脚本编码格式化工具 右键脚本  Tools/Script Encoding
+
+2. 新增工程配置编辑，用于编辑器指定工具配置文件的根目录 
+
+3. 新增BuildSetting编辑面板  Game Framework/Scenes in Build Settings/Open Editor
