@@ -14,6 +14,7 @@ using System.Xml;
 using UnityEditor;
 using UnityEngine;
 using UnityGameFramework.Runtime;
+using UnityGameFramework.Editor.Settings;
 
 namespace UnityGameFramework.Editor.ResourceTools
 {
@@ -32,7 +33,10 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         public ResourcePackBuilderController()
         {
-            m_ConfigurationPath = Type.GetConfigurationPath<ResourceBuilderConfigPathAttribute>() ?? Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "GameFramework/Configs/ResourceBuilder.xml"));
+            /// TODO hxd 2024/07/19 改成读取工程配置的工具存储根目
+            string rootDir = UGFSettings.Instance.toolsConfigRootDir ?? Application.dataPath;
+            m_ConfigurationPath = Utility.Path.GetRegularPath(Path.Combine(rootDir, "ResourceBuilder.xml"));
+            //m_ConfigurationPath = Type.GetConfigurationPath<ResourceBuilderConfigPathAttribute>() ?? Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "GameFramework/Configs/ResourceBuilder.xml"));
 
             m_UpdatableVersionListSerializer = new UpdatableVersionListSerializer();
             m_UpdatableVersionListSerializer.RegisterDeserializeCallback(0, BuiltinVersionListSerializer.UpdatableVersionListDeserializeCallback_V0);

@@ -5,12 +5,13 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
-namespace UnityGameFramework.Editor.ResourceTools
-{
-    /// <summary>
-    /// ResourceBuilder 配置路径属性。
-    /// </summary>
-    public sealed class ResourceBuilderConfigPathAttribute : ConfigPathAttribute
-    {
-    }
-}
+// TODO hxd 2024/07/19 暂时不使用该方式，改用工程配置的方式
+//namespace UnityGameFramework.Editor.ResourceTools
+//{
+//    /// <summary>
+//    /// ResourceBuilder 配置路径属性。
+//    /// </summary>
+//    public sealed class ResourceBuilderConfigPathAttribute : ConfigPathAttribute
+//    {
+//    }
+//}

@@ -11,6 +11,7 @@ using System.IO;
 using System.Xml;
 using UnityEditor;
 using UnityEngine;
+using UnityGameFramework.Editor.Settings;
 
 namespace UnityGameFramework.Editor
 {
@@ -25,7 +26,11 @@ namespace UnityGameFramework.Editor
 
         static BuildSettings()
         {
-            s_ConfigurationPath = Type.GetConfigurationPath<BuildSettingsConfigPathAttribute>() ?? Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "GameFramework/Configs/BuildSettings.xml"));
+            // TODO hxd 2024/07/19 改成读取工程配置的工具存储根目
+            string rootDir = UGFSettings.Instance.toolsConfigRootDir ?? Application.dataPath;
+            s_ConfigurationPath = Utility.Path.GetRegularPath(Path.Combine(rootDir, "BuildSettings.xml")); 
+            //s_ConfigurationPath = Type.GetConfigurationPath<BuildSettingsConfigPathAttribute>() ?? Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "GameFramework/Configs/BuildSettings.xml"));
+            
             s_DefaultSceneNames.Clear();
             s_SearchScenePaths.Clear();
 

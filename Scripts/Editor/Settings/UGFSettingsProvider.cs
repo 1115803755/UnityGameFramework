@@ -103,7 +103,10 @@ namespace UnityGameFramework.Editor.Settings
                 _serializedObject.Update();
                 EditorGUI.BeginChangeCheck();
 
-                SelectionFolderPath("工具相关的配置文件保存根目录", "选择路径", _toolsConfigRootDir, _uiStyle);
+                SelectionFolderPath("工具相关的配置文件保存根目录", "选择路径", 
+                    "BuildSettings.xml\nResourceEditor.xml\nResourceCollection.xml\nResourceBuilder.xml", _toolsConfigRootDir, _uiStyle);
+               
+                EditorGUILayout.Space(10);
 
                 if (EditorGUI.EndChangeCheck())
                 {

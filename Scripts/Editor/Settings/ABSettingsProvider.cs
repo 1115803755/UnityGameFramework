@@ -25,9 +25,10 @@ namespace UnityGameFramework.Editor.Settings
         /// </summary>
         /// <param name="label"></param>
         /// <param name="btnLabel"></param>
+        /// <param name="info"></param>
         /// <param name="property"></param>
         /// <param name="uiStyle"></param>
-        protected void  SelectionFolderPath(string label, string btnLabel, SerializedProperty property, GUIStyle uiStyle)
+        protected void  SelectionFolderPath(string label, string btnLabel, string info, SerializedProperty property, GUIStyle uiStyle)
         {
             EditorGUILayout.LabelField(label, uiStyle);
             EditorGUILayout.BeginHorizontal();
@@ -49,6 +50,12 @@ namespace UnityGameFramework.Editor.Settings
                 }
             }
             EditorGUILayout.EndHorizontal();
+
+            if(!string.IsNullOrEmpty(info))
+            {
+                EditorGUILayout.HelpBox(info, MessageType.Info);
+            }
+
             EditorGUILayout.Space(EditorGUIUtility.singleLineHeight);
         }
     }

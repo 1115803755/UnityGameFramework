@@ -12,6 +12,7 @@ using System.IO;
 using System.Xml;
 using UnityEditor;
 using UnityEngine;
+using UnityGameFramework.Editor.Settings;
 
 namespace UnityGameFramework.Editor.ResourceTools
 {
@@ -34,7 +35,10 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         public ResourceEditorController()
         {
-            m_ConfigurationPath = Type.GetConfigurationPath<ResourceEditorConfigPathAttribute>() ?? Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "GameFramework/Configs/ResourceEditor.xml"));
+            // TODO hxd 2024/07/19 改成读取工程配置的工具存储根目
+            string rootDir = UGFSettings.Instance.toolsConfigRootDir ?? Application.dataPath;
+            m_ConfigurationPath = Utility.Path.GetRegularPath(Path.Combine(rootDir, "ResourceEditor.xml"));
+            //m_ConfigurationPath = Type.GetConfigurationPath<ResourceEditorConfigPathAttribute>() ?? Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "GameFramework/Configs/ResourceEditor.xml"));
             m_ResourceCollection = new ResourceCollection();
             m_ResourceCollection.OnLoadingResource += delegate (int index, int count)
             {

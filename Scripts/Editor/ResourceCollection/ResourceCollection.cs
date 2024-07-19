@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using UnityEditor;
 using UnityEngine;
+using UnityGameFramework.Editor.Settings;
 
 namespace UnityGameFramework.Editor.ResourceTools
 {
@@ -32,7 +33,10 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         public ResourceCollection()
         {
-            m_ConfigurationPath = Type.GetConfigurationPath<ResourceCollectionConfigPathAttribute>() ?? Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "GameFramework/Configs/ResourceCollection.xml"));
+            // TODO hxd 2024/07/19 改成读取工程配置的工具存储根目
+            string rootDir = UGFSettings.Instance.toolsConfigRootDir ?? Application.dataPath;
+            m_ConfigurationPath = Utility.Path.GetRegularPath(Path.Combine(rootDir, "ResourceCollection.xml"));
+            //m_ConfigurationPath = Type.GetConfigurationPath<ResourceCollectionConfigPathAttribute>() ?? Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "GameFramework/Configs/ResourceCollection.xml"));
             m_Resources = new SortedDictionary<string, Resource>(StringComparer.Ordinal);
             m_Assets = new SortedDictionary<string, Asset>(StringComparer.Ordinal);
         }
