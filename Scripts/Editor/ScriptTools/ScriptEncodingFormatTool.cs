@@ -33,6 +33,8 @@ namespace UnityGameFramework.Editor.ScriptTools
                 if (IsCSharpFile(fileName))
                 {
                     ChangeFormat(absoluteAssetPath);
+                    EditorUtility.SetDirty(selectedObject);
+                    AssetDatabase.Refresh();
                 }
                 else
                 {
