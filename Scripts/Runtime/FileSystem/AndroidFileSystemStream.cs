@@ -16,7 +16,7 @@ namespace UnityGameFramework.Runtime
     /// <summary>
     /// 安卓文件系统流。
     /// </summary>
-    public sealed class AndroidFileSystemStream : FileSystemStream
+    public sealed class AndroidFileSystemStream : FileSystemStream, IDisposable
     {
         private static readonly string SplitFlag = "!/assets/";
         private static readonly int SplitFlagLength = SplitFlag.Length;
@@ -219,30 +219,51 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         protected override void Close()
         {
-            InternalClose();
-            m_FileStream.Dispose();
+            Dispose();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         private AndroidJavaObject InternalOpen(string fileName)
         {
             return s_AssetManager.Call<AndroidJavaObject>("open", fileName);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private int InternalAvailable()
         {
             return m_FileStream.Call<int>("available");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void InternalClose()
         {
             m_FileStream.Call("close");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private int InternalRead()
         {
             return m_FileStream.Call<int>("read");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="length"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
         private int InternalRead(int length, out byte[] result)
         {
 #if UNITY_2019_2_OR_NEWER
@@ -280,14 +301,31 @@ namespace UnityGameFramework.Runtime
             return offset;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void InternalReset()
         {
             m_FileStream.Call("reset");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <returns></returns>
         private long InternalSkip(long offset)
         {
             return m_FileStream.Call<long>("skip", offset);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            InternalClose();
+            m_FileStream.Dispose();
         }
     }
 }
