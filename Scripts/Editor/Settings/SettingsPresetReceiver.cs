@@ -31,7 +31,7 @@ namespace UnityGameFramework.Editor.Settings
         /// </summary>
         /// <param name="target"></param>
         /// <param name="provider"></param>
-        internal void Init(Object target, SettingsProvider provider)
+        public void Init(Object target, SettingsProvider provider)
         {
             m_Target = target;
             m_InitialValue = new Preset(target);
