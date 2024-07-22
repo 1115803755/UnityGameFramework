@@ -1,23 +1,23 @@
-/***************************************************************
+ï»¿/***************************************************************
 * Author: HuangXiaoDong
 * Data  : 2024/07/17 11:44:56
-* Note  : ²¹³äTypeµÄRuntimeAssemblyNamesºÍRuntimeOrEditorAssemblyNames
-*         ½ö¶Ô¾²Ì¬¹²ÓĞµÄ×Ö¶ÎÉúĞ§
+* Note  : è¡¥å……Typeçš„RuntimeAssemblyNameså’ŒRuntimeOrEditorAssemblyNames
+*         ä»…å¯¹é™æ€å…±æœ‰çš„å­—æ®µç”Ÿæ•ˆ
 ***************************************************************/
 using System;
 
 namespace UnityGameFramework.Editor
 {
     /// <summary>
-    /// ±à¼­Æ÷ÏÂ²¹³äTypeµÄRuntimeAssemblyNamesºÍRuntimeOrEditorAssemblyNames
-    /// ½ö¶Ô¾²Ì¬¹²ÓĞµÄ×Ö¶ÎÉúĞ§
-    /// ½â¾öÒòÎª»®·ÖÁË³ÌĞò¼¯µ¼ÖÂ¶Á²»µ½²¿·ÖType¶¨ÒåµÄÎÊÌâ£¬±ÈÈçprocedure
+    /// ç¼–è¾‘å™¨ä¸‹è¡¥å……Typeçš„RuntimeAssemblyNameså’ŒRuntimeOrEditorAssemblyNames
+    /// ä»…å¯¹é™æ€å…±æœ‰çš„å­—æ®µç”Ÿæ•ˆ
+    /// è§£å†³å› ä¸ºåˆ’åˆ†äº†ç¨‹åºé›†å¯¼è‡´è¯»ä¸åˆ°éƒ¨åˆ†Typeå®šä¹‰çš„é—®é¢˜ï¼Œæ¯”å¦‚procedure
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class ReplenishTypeAttribute : Attribute
     {
         /// <summary>
-        /// trueÎªÔËĞĞÊ±assembly£¬·ñÔòÎª±à¼­Æ÷assembly
+        /// trueä¸ºè¿è¡Œæ—¶assemblyï¼Œå¦åˆ™ä¸ºç¼–è¾‘å™¨assembly
         /// </summary>
         public bool runtime;
 
