@@ -34,7 +34,7 @@ namespace UnityGameFramework.Editor.ResourceTools
         public ResourceCollection()
         {
             // TODO hxd 2024/07/19 改成读取工程配置的工具存储根目
-            string rootDir = UGFSettings.Instance.ToolsConfigRootDir ?? Application.dataPath;
+            string rootDir = UGFSettings.Instance.toolsConfigRootDir ?? Application.dataPath;
             m_ConfigurationPath = Utility.Path.GetRegularPath(Path.Combine(rootDir, "ResourceCollection.xml"));
             //m_ConfigurationPath = Type.GetConfigurationPath<ResourceCollectionConfigPathAttribute>() ?? Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "GameFramework/Configs/ResourceCollection.xml"));
             m_Resources = new SortedDictionary<string, Resource>(StringComparer.Ordinal);

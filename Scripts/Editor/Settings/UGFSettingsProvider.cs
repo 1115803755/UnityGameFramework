@@ -58,7 +58,7 @@ namespace UnityGameFramework.Editor.Settings
             var setting = UGFSettings.LoadOrCreate();
             m_SerializedObject?.Dispose();
             m_SerializedObject = new SerializedObject(setting);
-            m_ToolsConfigRootDir = m_SerializedObject.FindProperty("ToolsConfigRootDir");
+            m_ToolsConfigRootDir = m_SerializedObject.FindProperty("toolsConfigRootDir");
             m_UIStyle = m_UIStyle ?? new GUIStyle() 
             {
                 fontSize = 14,
