@@ -6,6 +6,7 @@
 using System;
 using System.Reflection;
 using UnityEditor;
+using UnityEditor.Presets;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -16,22 +17,22 @@ namespace UnityGameFramework.Editor.Settings
         /// <summary>
         /// 
         /// </summary>
-        private SerializedObject _serializedObject;
+        private SerializedObject m_SerializedObject;
 
         /// <summary>
         /// 
         /// </summary>
-        private SerializedProperty _toolsConfigRootDir;
+        private SerializedProperty m_ToolsConfigRootDir;
 
         /// <summary>
         /// 
         /// </summary>
-        private GUIStyle _buttonStyle;
+        private GUIStyle m_ButtonStyle;
 
         /// <summary>
         /// 
         /// </summary>
-        private GUIStyle _uiStyle;
+        private GUIStyle m_UIStyle;
 
         /// <summary>
         /// 
@@ -45,7 +46,7 @@ namespace UnityGameFramework.Editor.Settings
         /// <param name="rootElement"></param>
         public override void OnActivate(string searchContext, VisualElement rootElement)
         {
-            EditorStatusWatcher.OnEditorFocused += OnEditorFocused;
+            EditorUGFSettingsStatusWatcher.OnEditorFocused += OnEditorFocused;
             InitGUI();
         }
 
@@ -55,10 +56,10 @@ namespace UnityGameFramework.Editor.Settings
         private void InitGUI()
         {
             var setting = UGFSettings.LoadOrCreate();
-            _serializedObject?.Dispose();
-            _serializedObject = new SerializedObject(setting);
-            _toolsConfigRootDir = _serializedObject.FindProperty("toolsConfigRootDir");
-            _uiStyle = _uiStyle ?? new GUIStyle() 
+            m_SerializedObject?.Dispose();
+            m_SerializedObject = new SerializedObject(setting);
+            m_ToolsConfigRootDir = m_SerializedObject.FindProperty("toolsConfigRootDir");
+            m_UIStyle = m_UIStyle ?? new GUIStyle() 
             {
                 fontSize = 14,
                 normal =
@@ -84,7 +85,57 @@ namespace UnityGameFramework.Editor.Settings
         {
             base.OnTitleBarGUI();
             var rect = GUILayoutUtility.GetLastRect();
-            _buttonStyle = _buttonStyle ?? GUI.skin.GetStyle("IconButton");
+            m_ButtonStyle = m_ButtonStyle ?? GUI.skin.GetStyle("IconButton");
+
+            #region  绘制官方网站跳转按钮
+            var w = rect.x + rect.width;
+            rect.x = w - 57;
+            rect.y += 6;
+            rect.width = rect.height = 18;
+            var content = EditorGUIUtility.IconContent("_Help");
+            content.tooltip = "点击访问 UGF 官方文档";
+            if (GUI.Button(rect, content, m_ButtonStyle))
+            {
+                Application.OpenURL("https://gameframework.cn/document/");
+            }
+            #endregion
+            #region 绘制 Preset
+            rect.x += 19;
+            content = EditorGUIUtility.IconContent("Preset.Context");
+            content.tooltip = "点击存储或加载 Preset .";
+            if (GUI.Button(rect, content, m_ButtonStyle))
+            {
+                var target = UGFSettings.Instance;
+                var receiver = ScriptableObject.CreateInstance<SettingsPresetReceiver>();
+                receiver.Init(target, this);
+                PresetSelector.ShowSelector(target, null, true, receiver);
+            }
+            #endregion
+            #region 绘制 Reset
+            rect.x += 19;
+            content = EditorGUIUtility.IconContent(
+#if UNITY_2021_3_OR_NEWER
+                "pane options"
+#else
+                "_Popup"
+#endif
+                );
+            content.tooltip = "Reset";
+            if (GUI.Button(rect, content, m_ButtonStyle))
+            {
+                GenericMenu menu = new GenericMenu();
+                menu.AddItem(new GUIContent("Reset"), false, () =>
+                {
+                    Undo.RecordObject(UGFSettings.Instance, "Capture Value for Reset");
+                    var dv = ScriptableObject.CreateInstance<UGFSettings>();
+                    var json = EditorJsonUtility.ToJson(dv);
+                    UnityEngine.Object.DestroyImmediate(dv);
+                    EditorJsonUtility.FromJsonOverwrite(json, UGFSettings.Instance);
+                    UGFSettings.Save();
+                });
+                menu.ShowAsContext();
+            }
+            #endregion
         }
 
         /// <summary>
@@ -96,21 +147,21 @@ namespace UnityGameFramework.Editor.Settings
             using (CreateSettingsWindowGUIScope())
             {
                 // 解决编辑器打包时出现的 _serializedObject.targetObject 意外销毁的情况
-                if (_serializedObject == null || !_serializedObject.targetObject)
+                if (m_SerializedObject == null || !m_SerializedObject.targetObject)
                 {
                     InitGUI();
                 }
-                _serializedObject.Update();
+                m_SerializedObject.Update();
                 EditorGUI.BeginChangeCheck();
 
                 SelectionFolderPath("工具相关的配置文件保存根目录", "选择路径", 
-                    "BuildSettings.xml\nResourceEditor.xml\nResourceCollection.xml\nResourceBuilder.xml", _toolsConfigRootDir, _uiStyle);
+                    "BuildSettings.xml\nResourceEditor.xml\nResourceCollection.xml\nResourceBuilder.xml", m_ToolsConfigRootDir, m_UIStyle);
                
                 EditorGUILayout.Space(10);
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    _serializedObject.ApplyModifiedProperties();
+                    m_SerializedObject.ApplyModifiedProperties();
                     UGFSettings.Save();
                 }
             }
@@ -133,7 +184,7 @@ namespace UnityGameFramework.Editor.Settings
         public override void OnDeactivate()
         {
             base.OnDeactivate();
-            EditorStatusWatcher.OnEditorFocused -= OnEditorFocused;
+            EditorUGFSettingsStatusWatcher.OnEditorFocused -= OnEditorFocused;
             UGFSettings.Save();
         }
 
