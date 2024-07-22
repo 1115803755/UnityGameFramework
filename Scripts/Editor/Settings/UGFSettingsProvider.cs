@@ -46,7 +46,7 @@ namespace UnityGameFramework.Editor.Settings
         /// <param name="rootElement"></param>
         public override void OnActivate(string searchContext, VisualElement rootElement)
         {
-            EditorUGFSettingsStatusWatcher.OnEditorFocused += OnEditorFocused;
+            UGFSettingsEditorStatusWatcher.OnEditorFocused += OnEditorFocused;
             InitGUI();
         }
 
@@ -184,7 +184,7 @@ namespace UnityGameFramework.Editor.Settings
         public override void OnDeactivate()
         {
             base.OnDeactivate();
-            EditorUGFSettingsStatusWatcher.OnEditorFocused -= OnEditorFocused;
+            UGFSettingsEditorStatusWatcher.OnEditorFocused -= OnEditorFocused;
             UGFSettings.Save();
         }
 
