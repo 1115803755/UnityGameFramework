@@ -8,7 +8,7 @@ using UnityEditor;
 using System.IO;
 using System.Text;
 
-namespace ScriptTools
+namespace UnityGameFramework.Editor.ScriptTools
 {
     public class ScriptEncodingFormatTool
     {
