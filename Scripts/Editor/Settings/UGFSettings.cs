@@ -13,6 +13,6 @@ namespace UnityGameFramework.Editor.Settings
         /// <summary>
         /// 工具相关配置文件存放的根目录
         /// </summary>
-        public string toolsConfigRootDir = "Assets/";
+        public string ToolsConfigRootDir = "Assets/";
     }
 }
