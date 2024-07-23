@@ -13,10 +13,11 @@ using UnityEngine;
 
 namespace UnityGameFramework.Runtime
 {
+    // TODO hxd 2024/07/23 开放AndroidFileSystemStream的继承性
     /// <summary>
     /// 安卓文件系统流。
     /// </summary>
-    public sealed class AndroidFileSystemStream : FileSystemStream, IDisposable
+    public /*sealed*/ class AndroidFileSystemStream : FileSystemStream, IDisposable
     {
         private static readonly string SplitFlag = "!/assets/";
         private static readonly int SplitFlagLength = SplitFlag.Length;

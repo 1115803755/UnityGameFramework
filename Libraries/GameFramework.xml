@@ -9413,7 +9413,7 @@
         </member>
         <member name="T:GameFramework.FileSystem.CommonFileSystemStream">
             <summary>
-            通用文件系统流。
+            通用文件系统流
             </summary>
         </member>
         <member name="M:GameFramework.FileSystem.CommonFileSystemStream.#ctor(System.String,GameFramework.FileSystem.FileSystemAccess,System.Boolean)">
