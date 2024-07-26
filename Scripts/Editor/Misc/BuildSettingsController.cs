@@ -43,7 +43,7 @@ namespace UnityGameFramework.Editor
             defaultScenes = new List<string>();
             searchScenePaths = new List<string>();
 
-            string rootDir = Settings.UGFSettings.Instance.toolsConfigRootDir ?? Application.dataPath;
+            string rootDir = Settings.UGFSettings.Instance.EditorConfigRootDir ?? Application.dataPath;
             m_ConfigurationPath = Utility.Path.GetRegularPath(Path.Combine(rootDir, "BuildSettings.xml"));
         }
 

@@ -22,7 +22,7 @@ namespace UnityGameFramework.Editor.Settings
         /// <summary>
         /// 
         /// </summary>
-        private SerializedProperty m_ToolsConfigRootDir;
+        private SerializedProperty m_EditorConfigRootDir;
 
         /// <summary>
         /// 
@@ -58,7 +58,7 @@ namespace UnityGameFramework.Editor.Settings
             var setting = UGFSettings.LoadOrCreate();
             m_SerializedObject?.Dispose();
             m_SerializedObject = new SerializedObject(setting);
-            m_ToolsConfigRootDir = m_SerializedObject.FindProperty("toolsConfigRootDir");
+            m_EditorConfigRootDir = m_SerializedObject.FindProperty(nameof(setting.EditorConfigRootDir));
             m_UIStyle = m_UIStyle ?? new GUIStyle() 
             {
                 fontSize = 14,
@@ -154,9 +154,9 @@ namespace UnityGameFramework.Editor.Settings
                 m_SerializedObject.Update();
                 EditorGUI.BeginChangeCheck();
 
-                SelectionFolderPath("工具相关的配置文件保存根目录", "选择路径", 
-                    "BuildSettings.xml\nResourceEditor.xml\nResourceCollection.xml\nResourceBuilder.xml", m_ToolsConfigRootDir, m_UIStyle);
-               
+                SelectionFolderPath("编辑器相关配置文件保存根目录", "选择路径", 
+                    "BuildSettings.xml\nResourceEditor.xml\nResourceCollection.xml\nResourceBuilder.xml", m_EditorConfigRootDir, m_UIStyle);
+
                 EditorGUILayout.Space(10);
 
                 if (EditorGUI.EndChangeCheck())

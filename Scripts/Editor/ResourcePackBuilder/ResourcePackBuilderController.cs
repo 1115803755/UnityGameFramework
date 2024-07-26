@@ -34,7 +34,7 @@ namespace UnityGameFramework.Editor.ResourceTools
         public ResourcePackBuilderController()
         {
             /// TODO hxd 2024/07/19 改成读取工程配置的工具存储根目
-            string rootDir = UGFSettings.Instance.toolsConfigRootDir ?? Application.dataPath;
+            string rootDir = UGFSettings.Instance.EditorConfigRootDir ?? Application.dataPath;
             m_ConfigurationPath = Utility.Path.GetRegularPath(Path.Combine(rootDir, "ResourceBuilder.xml"));
             //m_ConfigurationPath = Type.GetConfigurationPath<ResourceBuilderConfigPathAttribute>() ?? Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "GameFramework/Configs/ResourceBuilder.xml"));
 
