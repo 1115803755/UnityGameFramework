@@ -3,8 +3,6 @@
 * Data  : 2024/07/18 19:30:12
 * Note  : 框架配置
 ***************************************************************/
-using System;
-using System.Collections.Generic;
 
 namespace UnityGameFramework.Editor.Settings
 {
@@ -15,17 +13,5 @@ namespace UnityGameFramework.Editor.Settings
         /// 编辑器相关配置文件存放的根目录
         /// </summary>
         public string EditorConfigRootDir = "Assets/";
-
-        /// <summary>
-        /// 引用EditorConfigRootDir目录的资源记录
-        /// </summary>
-        public List<RefEditorConfigRootRecord> RefEditorConfigRootDirRecord = new List<RefEditorConfigRootRecord>();
-    }
-
-    [Serializable]
-    public class RefEditorConfigRootRecord
-    {
-        public string key;
-        public string value;
     }
 }
