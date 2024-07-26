@@ -90,7 +90,7 @@ namespace UnityGameFramework.Runtime
             m_WaitingLogQueue = new Queue<LogOutputData>();
             m_LogLock = new object();
 
-            string logName = DateTime.Now.ToString("yyy-MM-dd HH:mm:ss");
+            string logName = DateTime.Now.ToString("yyy-MM-dd-HH-mm-ss");
             string logPath = string.Format("{0}/{1}/{2}.txt", s_DevicePersistentPath, s_LogPath, logName);
             if (File.Exists(logPath))
             {
