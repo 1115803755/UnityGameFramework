@@ -25,6 +25,8 @@ namespace UnityGameFramework.Editor
         private SerializedProperty m_TextHelperTypeName = null;
         private SerializedProperty m_VersionHelperTypeName = null;
         private SerializedProperty m_LogHelperTypeName = null;
+        private SerializedProperty m_LogOutputFile = null;
+        private SerializedProperty m_LogOutputLevel = null;
         private SerializedProperty m_CompressionHelperTypeName = null;
         private SerializedProperty m_JsonHelperTypeName = null;
         private SerializedProperty m_FrameRate = null;
@@ -84,6 +86,12 @@ namespace UnityGameFramework.Editor
                     {
                         m_LogHelperTypeNameIndex = logHelperSelectedIndex;
                         m_LogHelperTypeName.stringValue = logHelperSelectedIndex <= 0 ? null : m_LogHelperTypeNames[logHelperSelectedIndex];
+                    }
+
+                    m_LogOutputFile.boolValue = EditorGUILayout.Toggle("LogOutputFile", m_LogOutputFile.boolValue);
+                    if (m_LogOutputFile.boolValue)
+                    {
+                        m_LogOutputLevel.enumValueIndex = (int)(LogOutputLevel)EditorGUILayout.EnumPopup("LogOutputLevel", (LogOutputLevel)m_LogOutputLevel.enumValueIndex);
                     }
 
                     int compressionHelperSelectedIndex = EditorGUILayout.Popup("Compression Helper", m_CompressionHelperTypeNameIndex, m_CompressionHelperTypeNames);
@@ -183,6 +191,8 @@ namespace UnityGameFramework.Editor
             m_TextHelperTypeName = serializedObject.FindProperty("m_TextHelperTypeName");
             m_VersionHelperTypeName = serializedObject.FindProperty("m_VersionHelperTypeName");
             m_LogHelperTypeName = serializedObject.FindProperty("m_LogHelperTypeName");
+            m_LogOutputFile = serializedObject.FindProperty("m_LogOutputFile");
+            m_LogOutputLevel = serializedObject.FindProperty("m_LogOutputLevel");
             m_CompressionHelperTypeName = serializedObject.FindProperty("m_CompressionHelperTypeName");
             m_JsonHelperTypeName = serializedObject.FindProperty("m_JsonHelperTypeName");
             m_FrameRate = serializedObject.FindProperty("m_FrameRate");

@@ -40,6 +40,12 @@ namespace UnityGameFramework.Runtime
         private string m_LogHelperTypeName = "UnityGameFramework.Runtime.DefaultLogHelper";
 
         [SerializeField]
+        private bool m_LogOutputFile;
+
+        [SerializeField]
+        private LogOutputLevel m_LogOutputLevel = LogOutputLevel.MAX;
+
+        [SerializeField]
         private string m_CompressionHelperTypeName = "UnityGameFramework.Runtime.DefaultCompressionHelper";
 
         [SerializeField]
@@ -180,11 +186,24 @@ namespace UnityGameFramework.Runtime
         }
 
         /// <summary>
+        /// 主线程id
+        /// </summary>
+        private int m_mainThreadID;
+        public int MainThreadID => m_mainThreadID;
+
+        /// <summary>
+        /// 日志写到文件工具类，仅当m_LogOutputFile为true时有效
+        /// </summary>
+        FileLogOutput m_FileLogOutput;
+
+        /// <summary>
         /// 游戏框架组件初始化。
         /// </summary>
         protected override void Awake()
         {
             base.Awake();
+
+            m_mainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
 
             InitTextHelper();
             InitVersionHelper();
@@ -220,25 +239,55 @@ namespace UnityGameFramework.Runtime
 #if UNITY_5_6_OR_NEWER
             Application.lowMemory += OnLowMemory;
 #endif
+
+#if UNITY_5_4_OR_NEWER
+            if(m_LogOutputFile)
+            {
+                Application.logMessageReceived += LogCallback;
+                Application.logMessageReceivedThreaded += LogMultiThreadCallback;
+                m_FileLogOutput = new FileLogOutput();
+            }
+#endif
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void Start()
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void Update()
         {
             GameFrameworkEntry.Update(Time.deltaTime, Time.unscaledDeltaTime);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void OnApplicationQuit()
         {
 #if UNITY_5_6_OR_NEWER
             Application.lowMemory -= OnLowMemory;
 #endif
+
+#if UNITY_5_4_OR_NEWER
+            if (m_LogOutputFile)
+            {
+                m_FileLogOutput.Close();
+                Application.logMessageReceived -= LogCallback;
+                Application.logMessageReceivedThreaded -= LogMultiThreadCallback;
+            }
+#endif
             StopAllCoroutines();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void OnDestroy()
         {
             GameFrameworkEntry.Shutdown();
@@ -284,11 +333,17 @@ namespace UnityGameFramework.Runtime
             GameSpeed = 1f;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         internal void Shutdown()
         {
             Destroy(gameObject);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void InitTextHelper()
         {
             if (string.IsNullOrEmpty(m_TextHelperTypeName))
@@ -313,6 +368,10 @@ namespace UnityGameFramework.Runtime
             Utility.Text.SetTextHelper(textHelper);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="GameFrameworkException"></exception>
         private void InitVersionHelper()
         {
             if (string.IsNullOrEmpty(m_VersionHelperTypeName))
@@ -335,6 +394,10 @@ namespace UnityGameFramework.Runtime
             GameFramework.Version.SetVersionHelper(versionHelper);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="GameFrameworkException"></exception>
         private void InitLogHelper()
         {
             if (string.IsNullOrEmpty(m_LogHelperTypeName))
@@ -357,6 +420,9 @@ namespace UnityGameFramework.Runtime
             GameFrameworkLog.SetLogHelper(logHelper);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void InitCompressionHelper()
         {
             if (string.IsNullOrEmpty(m_CompressionHelperTypeName))
@@ -381,6 +447,9 @@ namespace UnityGameFramework.Runtime
             Utility.Compression.SetCompressionHelper(compressionHelper);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void InitJsonHelper()
         {
             if (string.IsNullOrEmpty(m_JsonHelperTypeName))
@@ -405,6 +474,9 @@ namespace UnityGameFramework.Runtime
             Utility.Json.SetJsonHelper(jsonHelper);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void OnLowMemory()
         {
             Log.Info("Low memory reported...");
@@ -421,5 +493,57 @@ namespace UnityGameFramework.Runtime
                 resourceCompoent.ForceUnloadUnusedAssets(true);
             }
         }
+
+        #region LogCallBack 
+
+        // hxd 2024/07/26 参考QFramework的设计
+        /// <summary>
+        /// 日志调用回调，主线程和其他线程都会回调这个函数，在其中根据配置输出日志
+        /// （但是在真机上如果发生 Error 或者 Exception 时,收不到堆栈信息，此时配合LogMultiThreadCallback实现）
+        /// </summary>
+        /// <param name="log">日志</param>
+        /// <param name="track">堆栈追踪</param>
+        /// <param name="type">日志类型</param>
+        private void LogCallback(string log, string track, LogType type)
+        {
+            if (m_mainThreadID == System.Threading.Thread.CurrentThread.ManagedThreadId)
+            {
+                OutputLog(log, track, type);
+            }
+        }
+
+        /// <summary>
+        /// 日志回调（需要在处理 Log 信息的时候要保证线程安全）
+        /// </summary>
+        /// <param name="log"></param>
+        /// <param name="track"></param>
+        /// <param name="type"></param>
+        private void LogMultiThreadCallback(string log, string track, LogType type)
+        {
+            if (m_mainThreadID != System.Threading.Thread.CurrentThread.ManagedThreadId)
+            {
+                OutputLog(log, track, type);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="log"></param>
+        /// <param name="track"></param>
+        /// <param name="type"></param>
+        private void OutputLog(string log, string track, LogType type)
+        {
+            if (FileLogOutput.s_LogTypeLevelDict[type] >= m_LogOutputLevel)
+            {
+                m_FileLogOutput.Log(new FileLogOutput.LogOutputData { 
+                    Log = log,
+                    Track = track,
+                    LogType = type,
+                });
+            }
+        }
+
+        #endregion
     }
 }
