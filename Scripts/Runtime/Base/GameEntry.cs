@@ -85,31 +85,47 @@ namespace UnityGameFramework.Runtime
         public static void Shutdown(ShutdownType shutdownType)
         {
             Log.Info("Shutdown Game Framework ({0})...", shutdownType);
-            BaseComponent baseComponent = GetComponent<BaseComponent>();
-            if (baseComponent != null)
-            {
-                baseComponent.Shutdown();
-                baseComponent = null;
-            }
 
-            s_GameFrameworkComponents.Clear();
+            // TODO hxd 2024/07/29 由于这里提前清除掉BaseComponent，导致内部OnApplicationQuit没被执行，使清理工作做的不完整
+            // 另外除了ShutdownType.None模式，其他两个模式其实都会执行BaseComponent的销毁，所以这里没必要都处理，可以仅在
+            // None模式下处理，并且目前也不清楚为啥要提供None模式，好像是没啥意义。同时注意的是 Application.Quit()调用后不会
+            // 马上执行对象上 OnApplicationQuit回调，也就意味着BaseComponent不管是在Application.Quit()调用后销毁还是调用前销毁，
+            // BaseComponent的OnApplicationQuit都不会执行
+            //BaseComponent baseComponent = GetComponent<BaseComponent>();
+            //if (baseComponent != null)
+            //{
+            //    baseComponent.Shutdown();
+            //    baseComponent = null;
+            //}
+            //s_GameFrameworkComponents.Clear();
 
             if (shutdownType == ShutdownType.None)
             {
+                // TODO hxd 2024/07/29 虽然感觉这个模式没啥意义，但是还是按照e大的设计保留吧
+                BaseComponent baseComponent = GetComponent<BaseComponent>();
+                if (baseComponent != null)
+                {
+                    baseComponent.Shutdown();
+                    baseComponent = null;
+                }
+                s_GameFrameworkComponents.Clear();
                 return;
             }
 
             if (shutdownType == ShutdownType.Restart)
             {
+                s_GameFrameworkComponents.Clear();
                 SceneManager.LoadScene(GameFrameworkSceneId);
                 return;
             }
 
             if (shutdownType == ShutdownType.Quit)
             {
-                Application.Quit();
+                s_GameFrameworkComponents.Clear();
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
+#else
+                Application.Quit();
 #endif
                 return;
             }

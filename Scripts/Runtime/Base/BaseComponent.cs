@@ -270,6 +270,8 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         private void OnApplicationQuit()
         {
+            Log.Info("OnApplicationQuit");
+
 #if UNITY_5_6_OR_NEWER
             Application.lowMemory -= OnLowMemory;
 #endif
@@ -277,7 +279,8 @@ namespace UnityGameFramework.Runtime
 #if UNITY_5_4_OR_NEWER
             if (m_LogOutputFile)
             {
-                m_FileLogOutput.Close();
+                m_FileLogOutput?.Close();
+                m_FileLogOutput = null;
                 Application.logMessageReceived -= LogCallback;
                 Application.logMessageReceivedThreaded -= LogMultiThreadCallback;
             }
@@ -290,6 +293,26 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         private void OnDestroy()
         {
+            // hxd 2024/07/29 e大原来设定只在OnApplicationQuit调用，但是经过测试发现，框架提供的GameEntry.Shutdown实际上不会回调OnApplicationQuit，
+            // 因为内部先销毁了BaseComponent，导致OnApplicationQuit不会被回调（经测试，只要对象隐藏或者销毁，都不会回调，不管隐藏和销毁是否在Application.Quit()之前或者之后调用），
+            // 另外，GameEntry.Shutdown提供的ReStart和None操作并不会执行OnApplicationQuit，导致注销失败（虽然没啥大问题，但是后面加了m_FileLogOutput，导致文件没被关闭问题）
+            // 故这里采用双保险机制，在OnApplication和OnDestroy中均执行一次确保一定回正确注销（在安卓平台中直接杀掉应用，貌似只执行了OnApplication，OnDestroy方法没被调用）
+            // 这里不把这部分逻辑封装成一个方法，避免理解错误（因为一次关闭执行两次），如果需要自行在各自函数里面实现一次自己的逻辑
+
+            Log.Info("OnDestroy");
+#if UNITY_5_6_OR_NEWER
+            Application.lowMemory -= OnLowMemory;
+#endif
+
+#if UNITY_5_4_OR_NEWER
+            if (m_LogOutputFile)
+            {
+                m_FileLogOutput?.Close();
+                m_FileLogOutput = null;
+                Application.logMessageReceived -= LogCallback;
+                Application.logMessageReceivedThreaded -= LogMultiThreadCallback;
+            }
+#endif
             GameFrameworkEntry.Shutdown();
         }
 
