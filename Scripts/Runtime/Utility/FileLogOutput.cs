@@ -133,17 +133,26 @@ namespace UnityGameFramework.Runtime
                     while (m_WritingLogQueue.Count > 0)
                     {
                         LogOutputData log = m_WritingLogQueue.Dequeue();
-                        // hxd 2024/07/26 仅错误和异常输出堆栈
-                        if (log.LogType == LogType.Error || log.LogType == LogType.Exception)
+                        try
                         {
-                            m_LogWriter.WriteLine("---------------------------------------------------------------------------------------------------------------------");
-                            m_LogWriter.WriteLine(System.DateTime.Now.ToString() + "\t" + log.Log + "\n");
-                            m_LogWriter.WriteLine(log.Track);
-                            m_LogWriter.WriteLine("---------------------------------------------------------------------------------------------------------------------");
+                            // hxd 2024/07/26 仅错误和异常输出堆栈
+                            if (log.LogType == LogType.Error || log.LogType == LogType.Exception)
+                            {
+                                m_LogWriter.WriteLine("---------------------------------------------------------------------------------------------------------------------");
+                                m_LogWriter.WriteLine(System.DateTime.Now.ToString() + "\t" + log.Log + "\n");
+                                m_LogWriter.WriteLine(log.Track);
+                                m_LogWriter.WriteLine("---------------------------------------------------------------------------------------------------------------------");
+                            }
+                            else
+                            {
+                                m_LogWriter.WriteLine(System.DateTime.Now.ToString() + "\t" + log.Log);
+                            }
                         }
-                        else
+                        catch (System.Exception ex)
                         {
-                            m_LogWriter.WriteLine(System.DateTime.Now.ToString() + "\t" + log.Log);
+                            // hxd 2024/07/29 “Can not write to a closed TextWriter.”可能写的过程中被关闭了文件流，
+                            m_WritingLogQueue.Clear();
+                            break;
                         }
                     }
                 }
@@ -156,10 +165,13 @@ namespace UnityGameFramework.Runtime
         /// <param name="logData"></param>
         public void Log(LogOutputData logData)
         {
-            lock (m_LogLock)
+            if(m_IsRunning)
             {
-                m_WaitingLogQueue.Enqueue(logData);
-                Monitor.Pulse(m_LogLock);
+                lock (m_LogLock)
+                {
+                    m_WaitingLogQueue.Enqueue(logData);
+                    Monitor.Pulse(m_LogLock);
+                }
             }
         }
 
@@ -170,7 +182,6 @@ namespace UnityGameFramework.Runtime
         {
             m_IsRunning = false;
             m_LogWriter.Close();
-            m_LogWriter.Dispose();
         }
     }
 }
