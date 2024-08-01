@@ -269,6 +269,13 @@ namespace UnityGameFramework.Runtime
         {
             Log.Info("OnApplicationQuit");
 
+            // hxd 2024/08/02 关于OnApplicationQuit与OnDestroy调用问题
+            // OnApplicationQuit调用先于OnDestroy
+            // Editor模式下，不管是正常关闭、还是调用UnityEditor.EditorApplication.isPlaying(= Application.Shutdown)都会正常调用OnApplicationQuit与OnDestroy，但是任务管理器杀进程都不会调用
+            // Windows发布包，不管是正常关闭、alt + f4、任务管理器杀进程、还是调用Application.Shutdown都会正常调用OnApplicationQuit与OnDestroy
+            // Android发布包在手机上，正常关闭（调用Application.Shutdown）会正常调用OnApplicationQuit与OnDestroy、但是直接杀进程都不会调用（据说ios会调用OnApplicationQuit）
+            // Android发布包在模拟器上，正常关闭（调用Application.Shutdown）会正常调用OnApplicationQuit与OnDestroy、但是直接杀进程（除了第一次）都不会调用（重启模拟器第一次会调用OnApplicationQuit）
+
             // hxd 2024/08/01 为什么不直接放到OnDestroy中？还能避免由于restart没调用的问题？
             // 猜测可能是因为希望让程序退出时OnLowMemory尽早注销掉，少执行一些逻辑，避免因为回调一些耗时操作让程序退出更卡顿？
 #if UNITY_5_6_OR_NEWER
