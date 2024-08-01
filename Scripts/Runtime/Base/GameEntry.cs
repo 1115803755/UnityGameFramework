@@ -101,7 +101,7 @@ namespace UnityGameFramework.Runtime
 
             if (shutdownType == ShutdownType.None)
             {
-                // TODO hxd 2024/07/29 虽然感觉这个模式没啥意义，但是还是按照e大的设计保留吧
+                // TODO hxd 2024/07/29 虽然感觉这个模式没啥意义，可能是为了调试？但是还是按照e大的设计保留吧
                 BaseComponent baseComponent = GetComponent<BaseComponent>();
                 if (baseComponent != null)
                 {

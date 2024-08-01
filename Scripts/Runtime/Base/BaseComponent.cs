@@ -188,8 +188,8 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 主线程id
         /// </summary>
-        private int m_mainThreadID;
-        public int MainThreadID => m_mainThreadID;
+        private int m_MainThreadID;
+        public int MainThreadID => m_MainThreadID;
 
         /// <summary>
         /// 日志写到文件工具类，仅当m_LogOutputFile为true时有效
@@ -203,7 +203,13 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_mainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
+            m_MainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
+#if UNITY_5_4_OR_NEWER
+            if (m_LogOutputFile)
+            {
+                m_FileLogOutput = new FileLogOutput(m_MainThreadID, m_LogOutputLevel);
+            }
+#endif
 
             InitTextHelper();
             InitVersionHelper();
@@ -239,15 +245,6 @@ namespace UnityGameFramework.Runtime
 #if UNITY_5_6_OR_NEWER
             Application.lowMemory += OnLowMemory;
 #endif
-
-#if UNITY_5_4_OR_NEWER
-            if(m_LogOutputFile)
-            {
-                Application.logMessageReceived += LogCallback;
-                Application.logMessageReceivedThreaded += LogMultiThreadCallback;
-                m_FileLogOutput = new FileLogOutput();
-            }
-#endif
         }
 
         /// <summary>
@@ -272,19 +269,12 @@ namespace UnityGameFramework.Runtime
         {
             Log.Info("OnApplicationQuit");
 
+            // hxd 2024/08/01 为什么不直接放到OnDestroy中？还能避免由于restart没调用的问题？
+            // 猜测可能是因为希望让程序退出时OnLowMemory尽早注销掉，少执行一些逻辑，避免因为回调一些耗时操作让程序退出更卡顿？
 #if UNITY_5_6_OR_NEWER
             Application.lowMemory -= OnLowMemory;
 #endif
 
-#if UNITY_5_4_OR_NEWER
-            if (m_LogOutputFile)
-            {
-                m_FileLogOutput?.Close();
-                m_FileLogOutput = null;
-                Application.logMessageReceived -= LogCallback;
-                Application.logMessageReceivedThreaded -= LogMultiThreadCallback;
-            }
-#endif
             StopAllCoroutines();
         }
 
@@ -293,13 +283,11 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         private void OnDestroy()
         {
+            Log.Info("OnDestroy");
             // hxd 2024/07/29 e大原来设定只在OnApplicationQuit调用，但是经过测试发现，框架提供的GameEntry.Shutdown实际上不会回调OnApplicationQuit，
             // 因为内部先销毁了BaseComponent，导致OnApplicationQuit不会被回调（经测试，只要对象隐藏或者销毁，都不会回调，不管隐藏和销毁是否在Application.Quit()之前或者之后调用），
-            // 另外，GameEntry.Shutdown提供的ReStart和None操作并不会执行OnApplicationQuit，导致注销失败（虽然没啥大问题，但是后面加了m_FileLogOutput，导致文件没被关闭问题）
-            // 故这里采用双保险机制，在OnApplication和OnDestroy中均执行一次确保一定回正确注销（在安卓平台中直接杀掉应用，貌似只执行了OnApplication，OnDestroy方法没被调用）
-            // 这里不把这部分逻辑封装成一个方法，避免理解错误（因为一次关闭执行两次），如果需要自行在各自函数里面实现一次自己的逻辑
-
-            Log.Info("OnDestroy");
+            // 另外，GameEntry.Shutdown提供的ReStart和None操作并不会执行OnApplicationQuit，导致注册的回调没注销
+            // 故这里采用双保险机制，在OnApplication和OnDestroy中均执行一次确保一定回正确注销（Restart时也能正确注销，因为场景的重新加载仅会调用OnDestroy方法）
 #if UNITY_5_6_OR_NEWER
             Application.lowMemory -= OnLowMemory;
 #endif
@@ -307,10 +295,13 @@ namespace UnityGameFramework.Runtime
 #if UNITY_5_4_OR_NEWER
             if (m_LogOutputFile)
             {
+                // hxd 2024/08/01 c#打开一个文件流可以不关闭么？
+                // 在C#中，通常使用FileStream类来打开文件流。文件流打开后，如果不主动关闭，它将一直保持开放状态直到进程结束。
+                // 但是，在实际应用中，为了避免资源泄露和同步问题，应该始终在完成文件操作后关闭文件流。
+                // 一般来说独占文件打开的话，如果不关闭文件流，那么其它进程就无法读取这个文件了。
+                // 二在使用写入模式打开文件的时候，如果不进行close可能会有部分数据在缓存中没有真实写入文件中，这样其它程序打开文件时看到的数据就不完整了
                 m_FileLogOutput?.Close();
                 m_FileLogOutput = null;
-                Application.logMessageReceived -= LogCallback;
-                Application.logMessageReceivedThreaded -= LogMultiThreadCallback;
             }
 #endif
             GameFrameworkEntry.Shutdown();
@@ -516,57 +507,5 @@ namespace UnityGameFramework.Runtime
                 resourceCompoent.ForceUnloadUnusedAssets(true);
             }
         }
-
-        #region LogCallBack 
-
-        // hxd 2024/07/26 参考QFramework的设计
-        /// <summary>
-        /// 日志调用回调，主线程和其他线程都会回调这个函数，在其中根据配置输出日志
-        /// （但是在真机上如果发生 Error 或者 Exception 时,收不到堆栈信息，此时配合LogMultiThreadCallback实现）
-        /// </summary>
-        /// <param name="log">日志</param>
-        /// <param name="track">堆栈追踪</param>
-        /// <param name="type">日志类型</param>
-        private void LogCallback(string log, string track, LogType type)
-        {
-            if (m_mainThreadID == System.Threading.Thread.CurrentThread.ManagedThreadId)
-            {
-                OutputLog(log, track, type);
-            }
-        }
-
-        /// <summary>
-        /// 日志回调（需要在处理 Log 信息的时候要保证线程安全）
-        /// </summary>
-        /// <param name="log"></param>
-        /// <param name="track"></param>
-        /// <param name="type"></param>
-        private void LogMultiThreadCallback(string log, string track, LogType type)
-        {
-            if (m_mainThreadID != System.Threading.Thread.CurrentThread.ManagedThreadId)
-            {
-                OutputLog(log, track, type);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="log"></param>
-        /// <param name="track"></param>
-        /// <param name="type"></param>
-        private void OutputLog(string log, string track, LogType type)
-        {
-            if (FileLogOutput.s_LogTypeLevelDict[type] >= m_LogOutputLevel)
-            {
-                m_FileLogOutput.Log(new FileLogOutput.LogOutputData { 
-                    Log = log,
-                    Track = track,
-                    LogType = type,
-                });
-            }
-        }
-
-        #endregion
     }
 }

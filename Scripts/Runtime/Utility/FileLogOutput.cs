@@ -11,7 +11,7 @@ using System;
 
 namespace UnityGameFramework.Runtime
 {
-    public class FileLogOutput
+    public class FileLogOutput : IDisposable
     {
         /// <summary>
         /// 日志输出数据
@@ -59,6 +59,11 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 
         /// </summary>
+        private LogOutputLevel m_LogOutputLevel;
+
+        /// <summary>
+        /// 
+        /// </summary>
         private Queue<LogOutputData> m_WritingLogQueue = null;
 
         /// <summary>
@@ -84,8 +89,17 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 
         /// </summary>
-        public FileLogOutput()
+        private int m_MainThreadID = 0;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public FileLogOutput(int mainThreadID, LogOutputLevel logOutputLevel)
         {
+            m_MainThreadID = mainThreadID;
+            m_LogOutputLevel = logOutputLevel;
+            Application.logMessageReceived += LogCallback;
+            Application.logMessageReceivedThreaded += LogMultiThreadCallback;
             m_WritingLogQueue = new Queue<LogOutputData>();
             m_WaitingLogQueue = new Queue<LogOutputData>();
             m_LogLock = new object();
@@ -178,10 +192,74 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 
         /// </summary>
-        public void Close()
+        public void Dispose()
         {
             m_IsRunning = false;
             m_LogWriter.Close();
+            Application.logMessageReceived -= LogCallback;
+            Application.logMessageReceivedThreaded -= LogMultiThreadCallback;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Close()
+        {
+            Dispose();
+        }
+
+
+        #region LogCallBack 
+
+        // hxd 2024/07/26 参考QFramework的设计
+        /// <summary>
+        /// 日志调用回调，主线程和其他线程都会回调这个函数，在其中根据配置输出日志
+        /// （但是在真机上如果发生 Error 或者 Exception 时,收不到堆栈信息，此时配合LogMultiThreadCallback实现）
+        /// </summary>
+        /// <param name="log">日志</param>
+        /// <param name="track">堆栈追踪</param>
+        /// <param name="type">日志类型</param>
+        private void LogCallback(string log, string track, LogType type)
+        {
+            if (m_MainThreadID == Thread.CurrentThread.ManagedThreadId)
+            {
+                OutputLog(log, track, type);
+            }
+        }
+
+        /// <summary>
+        /// 日志回调（需要在处理 Log 信息的时候要保证线程安全）
+        /// </summary>
+        /// <param name="log"></param>
+        /// <param name="track"></param>
+        /// <param name="type"></param>
+        private void LogMultiThreadCallback(string log, string track, LogType type)
+        {
+            if (m_MainThreadID != Thread.CurrentThread.ManagedThreadId)
+            {
+                OutputLog(log, track, type);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="log"></param>
+        /// <param name="track"></param>
+        /// <param name="type"></param>
+        private void OutputLog(string log, string track, LogType type)
+        {
+            if (s_LogTypeLevelDict[type] >= m_LogOutputLevel)
+            {
+                Log(new LogOutputData
+                {
+                    Log = log,
+                    Track = track,
+                    LogType = type,
+                });
+            }
+        }
+
+        #endregion
     }
 }
