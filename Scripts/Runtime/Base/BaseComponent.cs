@@ -271,7 +271,7 @@ namespace UnityGameFramework.Runtime
 
             // hxd 2024/08/02 关于OnApplicationQuit与OnDestroy调用问题
             // OnApplicationQuit调用先于OnDestroy
-            // Editor模式下，不管是正常关闭、还是调用UnityEditor.EditorApplication.isPlaying(= Application.Shutdown)都会正常调用OnApplicationQuit与OnDestroy，但是任务管理器杀进程都不会调用
+            // Editor模式下，不管是正常关闭、还是调用UnityEditor.EditorApplication.isPlaying(= Application.Shutdown)都会正常调用OnApplicationQuit与OnDestroy，但是任务管理器杀进程OnApplicationQuit都不会调用，OnDestroy公司的会调用家里的不会调用?
             // Windows发布包，不管是正常关闭、alt + f4、任务管理器杀进程、还是调用Application.Shutdown都会正常调用OnApplicationQuit与OnDestroy
             // Android发布包在手机上，正常关闭（调用Application.Shutdown）会正常调用OnApplicationQuit与OnDestroy、但是直接杀进程都不会调用（据说ios会调用OnApplicationQuit）
             // Android发布包在模拟器上，正常关闭（调用Application.Shutdown）会正常调用OnApplicationQuit与OnDestroy、但是直接杀进程（除了第一次）都不会调用（重启模拟器第一次会调用OnApplicationQuit）
