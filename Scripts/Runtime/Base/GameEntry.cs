@@ -23,7 +23,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 游戏框架所在的场景编号。
         /// </summary>
-        internal const int GameFrameworkSceneId = 0;
+        internal const int GAME_FRAMEWORK_SCENE_ID = 0;
 
         /// <summary>
         /// 获取游戏框架组件。
@@ -115,7 +115,7 @@ namespace UnityGameFramework.Runtime
             if (shutdownType == ShutdownType.Restart)
             {
                 s_GameFrameworkComponents.Clear();
-                SceneManager.LoadScene(GameFrameworkSceneId);
+                SceneManager.LoadScene(GAME_FRAMEWORK_SCENE_ID);
                 return;
             }
 

@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// Web 请求开始事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(WebRequestStartEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(WebRequestStartEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化 Web 请求开始事件的新实例。
@@ -37,7 +37,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

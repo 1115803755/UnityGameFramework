@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 资源校验成功事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(ResourceVerifySuccessEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(ResourceVerifySuccessEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化资源校验成功事件的新实例。
@@ -36,7 +36,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

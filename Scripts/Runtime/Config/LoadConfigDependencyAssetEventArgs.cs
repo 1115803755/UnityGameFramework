@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 加载全局配置失败事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(LoadConfigDependencyAssetEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(LoadConfigDependencyAssetEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化加载全局配置时加载依赖资源事件的新实例。
@@ -39,7 +39,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

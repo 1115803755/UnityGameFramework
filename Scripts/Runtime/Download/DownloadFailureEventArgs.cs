@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 下载失败事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(DownloadFailureEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(DownloadFailureEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化下载失败事件的新实例。
@@ -39,7 +39,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

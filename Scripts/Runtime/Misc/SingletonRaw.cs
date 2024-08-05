@@ -16,12 +16,12 @@ namespace UnityGameFramework.Runtime.Misc
         /// <summary>
         /// 
         /// </summary>
-        private static T _instance;
+        private static T s_Instance;
 
         /// <summary>
         /// 
         /// </summary>
-        private static readonly object _lock = new object();
+        private static readonly object s_Lock = new object();
 
         /// <summary>
         /// 
@@ -30,18 +30,18 @@ namespace UnityGameFramework.Runtime.Misc
         {
             get
             {
-                if (_instance == null)
+                if (s_Instance == null)
                 {
-                    lock (_lock)
+                    lock (s_Lock)
                     {
-                        if (_instance == null)
+                        if (s_Instance == null)
                         {
-                            _instance = (T)Activator.CreateInstance(typeof(T));
+                            s_Instance = (T)Activator.CreateInstance(typeof(T));
                         }
                     }
                 }
 
-                return _instance;
+                return s_Instance;
             }
         }
     }

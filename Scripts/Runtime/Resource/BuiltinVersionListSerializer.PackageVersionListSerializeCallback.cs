@@ -52,7 +52,7 @@ namespace UnityGameFramework.Runtime
                     binaryWriter.Write(resource.HashCode);
                     int[] assetIndexes = resource.GetAssetIndexes();
                     binaryWriter.Write(assetIndexes.Length);
-                    byte[] hashBytes = new byte[CachedHashBytesLength];
+                    byte[] hashBytes = new byte[CACHED_HASH_BYTES_LENGTH];
                     foreach (int assetIndex in assetIndexes)
                     {
                         Utility.Converter.GetBytes(resource.HashCode, hashBytes);
@@ -81,7 +81,7 @@ namespace UnityGameFramework.Runtime
                 }
             }
 
-            Array.Clear(s_CachedHashBytes, 0, CachedHashBytesLength);
+            Array.Clear(s_CachedHashBytes, 0, CACHED_HASH_BYTES_LENGTH);
             return true;
         }
 
@@ -123,7 +123,7 @@ namespace UnityGameFramework.Runtime
                 {
                     binaryWriter.WriteEncryptedString(resource.Name, s_CachedHashBytes);
                     binaryWriter.WriteEncryptedString(resource.Variant, s_CachedHashBytes);
-                    binaryWriter.WriteEncryptedString(resource.Extension != DefaultExtension ? resource.Extension : null, s_CachedHashBytes);
+                    binaryWriter.WriteEncryptedString(resource.Extension != DEFAULT_EXTENSION ? resource.Extension : null, s_CachedHashBytes);
                     binaryWriter.Write(resource.LoadType);
                     binaryWriter.Write7BitEncodedInt32(resource.Length);
                     binaryWriter.Write(resource.HashCode);
@@ -149,7 +149,7 @@ namespace UnityGameFramework.Runtime
                 }
             }
 
-            Array.Clear(s_CachedHashBytes, 0, CachedHashBytesLength);
+            Array.Clear(s_CachedHashBytes, 0, CACHED_HASH_BYTES_LENGTH);
             return true;
         }
 
@@ -191,7 +191,7 @@ namespace UnityGameFramework.Runtime
                 {
                     binaryWriter.WriteEncryptedString(resource.Name, s_CachedHashBytes);
                     binaryWriter.WriteEncryptedString(resource.Variant, s_CachedHashBytes);
-                    binaryWriter.WriteEncryptedString(resource.Extension != DefaultExtension ? resource.Extension : null, s_CachedHashBytes);
+                    binaryWriter.WriteEncryptedString(resource.Extension != DEFAULT_EXTENSION ? resource.Extension : null, s_CachedHashBytes);
                     binaryWriter.Write(resource.LoadType);
                     binaryWriter.Write7BitEncodedInt32(resource.Length);
                     binaryWriter.Write(resource.HashCode);
@@ -230,7 +230,7 @@ namespace UnityGameFramework.Runtime
                 }
             }
 
-            Array.Clear(s_CachedHashBytes, 0, CachedHashBytesLength);
+            Array.Clear(s_CachedHashBytes, 0, CACHED_HASH_BYTES_LENGTH);
             return true;
         }
 

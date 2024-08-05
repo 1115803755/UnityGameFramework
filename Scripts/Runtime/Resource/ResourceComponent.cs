@@ -23,8 +23,8 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Resource")]
     public sealed class ResourceComponent : GameFrameworkComponent
     {
-        private const int DefaultPriority = 0;
-        private const int OneMegaBytes = 1024 * 1024;
+        private const int DEFAULT_PRIORITY = 0;
+        private const int ONE_MEGA_BYTES = 1024 * 1024;
 
         private IResourceManager m_ResourceManager = null;
         private EventComponent m_EventComponent = null;
@@ -76,7 +76,7 @@ namespace UnityGameFramework.Runtime
         private string m_UpdatePrefixUri = null;
 
         [SerializeField]
-        private int m_GenerateReadWriteVersionListLength = OneMegaBytes;
+        private int m_GenerateReadWriteVersionListLength = ONE_MEGA_BYTES;
 
         [SerializeField]
         private int m_UpdateRetryCount = 3;
@@ -953,7 +953,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="loadAssetCallbacks">加载资源回调函数集。</param>
         public void LoadAsset(string assetName, LoadAssetCallbacks loadAssetCallbacks)
         {
-            LoadAsset(assetName, null, DefaultPriority, loadAssetCallbacks, null);
+            LoadAsset(assetName, null, DEFAULT_PRIORITY, loadAssetCallbacks, null);
         }
 
         /// <summary>
@@ -964,7 +964,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="loadAssetCallbacks">加载资源回调函数集。</param>
         public void LoadAsset(string assetName, Type assetType, LoadAssetCallbacks loadAssetCallbacks)
         {
-            LoadAsset(assetName, assetType, DefaultPriority, loadAssetCallbacks, null);
+            LoadAsset(assetName, assetType, DEFAULT_PRIORITY, loadAssetCallbacks, null);
         }
 
         /// <summary>
@@ -986,7 +986,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void LoadAsset(string assetName, LoadAssetCallbacks loadAssetCallbacks, object userData)
         {
-            LoadAsset(assetName, null, DefaultPriority, loadAssetCallbacks, userData);
+            LoadAsset(assetName, null, DEFAULT_PRIORITY, loadAssetCallbacks, userData);
         }
 
         /// <summary>
@@ -1010,7 +1010,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void LoadAsset(string assetName, Type assetType, LoadAssetCallbacks loadAssetCallbacks, object userData)
         {
-            LoadAsset(assetName, assetType, DefaultPriority, loadAssetCallbacks, userData);
+            LoadAsset(assetName, assetType, DEFAULT_PRIORITY, loadAssetCallbacks, userData);
         }
 
         /// <summary>

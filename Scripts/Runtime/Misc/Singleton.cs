@@ -14,18 +14,18 @@ namespace UnityGameFramework.Runtime.Misc
         /// <summary>
         /// 
         /// </summary>
-        private static T _instance;
+        private static T s_Instance;
 
         /// <summary>
         /// ReSharper disable once StaticMemberInGenericType
         /// </summary>
-        private static readonly object Lock = new object();
+        private static readonly object s_Lock = new object();
 
         /// <summary>
         /// 
         /// </summary>
         [SerializeField] 
-        private bool _persistent = true;
+        private bool m_Persistent = true;
 
         #endregion
 
@@ -46,7 +46,7 @@ namespace UnityGameFramework.Runtime.Misc
                     if (count > 0)
                     {
                         if (count == 1)
-                            return _instance = instances[0];
+                            return s_Instance = instances[0];
                     }
 
 #endif
@@ -62,26 +62,26 @@ namespace UnityGameFramework.Runtime.Misc
                         return null;
                     }
 
-                    lock (Lock)
+                    lock (s_Lock)
                     {
-                        if (_instance != null)
-                            return _instance;
+                        if (s_Instance != null)
+                            return s_Instance;
                         var instances = FindObjectsOfType<T>();
                         var count = instances.Length;
                         if (count > 0)
                         {
                             if (count == 1)
-                                return _instance = instances[0];
+                                return s_Instance = instances[0];
                             Debug.LogWarning(
                                 $"[{nameof(Singleton)}<{typeof(T)}>] There should never be more than one {nameof(Singleton)} of type {typeof(T)} in the scene, but {count} were found. The first instance found will be used, and all others will be destroyed.");
                             for (var i = 1; i < instances.Length; i++)
                                 Destroy(instances[i]);
-                            return _instance = instances[0];
+                            return s_Instance = instances[0];
                         }
 
                         Debug.Log(
                             $"[{nameof(Singleton)}<{typeof(T)}>] An instance is needed in the scene and no existing instances were found, so a new instance will be created.");
-                        return _instance = new GameObject($"({nameof(Singleton)}){typeof(T)}")
+                        return s_Instance = new GameObject($"({nameof(Singleton)}){typeof(T)}")
                             .AddComponent<T>();
                     }
                 }
@@ -97,7 +97,7 @@ namespace UnityGameFramework.Runtime.Misc
         /// </summary>
         private void Awake()
         {
-            if (_persistent)
+            if (m_Persistent)
                 DontDestroyOnLoad(gameObject);
             OnAwake();
         }

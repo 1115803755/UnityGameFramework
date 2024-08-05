@@ -25,7 +25,7 @@ namespace UnityGameFramework.Runtime
         {
             using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8))
             {
-                byte[] encryptBytes = binaryReader.ReadBytes(CachedHashBytesLength);
+                byte[] encryptBytes = binaryReader.ReadBytes(CACHED_HASH_BYTES_LENGTH);
                 int resourceCount = binaryReader.ReadInt32();
                 LocalVersionList.Resource[] resources = resourceCount > 0 ? new LocalVersionList.Resource[resourceCount] : null;
                 for (int i = 0; i < resourceCount; i++)
@@ -51,14 +51,14 @@ namespace UnityGameFramework.Runtime
         {
             using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8))
             {
-                byte[] encryptBytes = binaryReader.ReadBytes(CachedHashBytesLength);
+                byte[] encryptBytes = binaryReader.ReadBytes(CACHED_HASH_BYTES_LENGTH);
                 int resourceCount = binaryReader.Read7BitEncodedInt32();
                 LocalVersionList.Resource[] resources = resourceCount > 0 ? new LocalVersionList.Resource[resourceCount] : null;
                 for (int i = 0; i < resourceCount; i++)
                 {
                     string name = binaryReader.ReadEncryptedString(encryptBytes);
                     string variant = binaryReader.ReadEncryptedString(encryptBytes);
-                    string extension = binaryReader.ReadEncryptedString(encryptBytes) ?? DefaultExtension;
+                    string extension = binaryReader.ReadEncryptedString(encryptBytes) ?? DEFAULT_EXTENSION;
                     byte loadType = binaryReader.ReadByte();
                     int length = binaryReader.Read7BitEncodedInt32();
                     int hashCode = binaryReader.ReadInt32();
@@ -78,14 +78,14 @@ namespace UnityGameFramework.Runtime
         {
             using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8))
             {
-                byte[] encryptBytes = binaryReader.ReadBytes(CachedHashBytesLength);
+                byte[] encryptBytes = binaryReader.ReadBytes(CACHED_HASH_BYTES_LENGTH);
                 int resourceCount = binaryReader.Read7BitEncodedInt32();
                 LocalVersionList.Resource[] resources = resourceCount > 0 ? new LocalVersionList.Resource[resourceCount] : null;
                 for (int i = 0; i < resourceCount; i++)
                 {
                     string name = binaryReader.ReadEncryptedString(encryptBytes);
                     string variant = binaryReader.ReadEncryptedString(encryptBytes);
-                    string extension = binaryReader.ReadEncryptedString(encryptBytes) ?? DefaultExtension;
+                    string extension = binaryReader.ReadEncryptedString(encryptBytes) ?? DEFAULT_EXTENSION;
                     byte loadType = binaryReader.ReadByte();
                     int length = binaryReader.Read7BitEncodedInt32();
                     int hashCode = binaryReader.ReadInt32();

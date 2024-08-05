@@ -46,7 +46,7 @@ namespace UnityGameFramework.Editor.Settings
         /// <param name="rootElement"></param>
         public override void OnActivate(string searchContext, VisualElement rootElement)
         {
-            UGFSettingsEditorStatusWatcher.OnEditorFocused += OnEditorFocused;
+            UGFSettingsEditorStatusWatcher.s_OnEditorFocused += OnEditorFocused;
             InitGUI();
         }
 
@@ -184,26 +184,26 @@ namespace UnityGameFramework.Editor.Settings
         public override void OnDeactivate()
         {
             base.OnDeactivate();
-            UGFSettingsEditorStatusWatcher.OnEditorFocused -= OnEditorFocused;
+            UGFSettingsEditorStatusWatcher.s_OnEditorFocused -= OnEditorFocused;
             UGFSettings.Save();
         }
 
         /// <summary>
         /// 
         /// </summary>
-        static UGFSettingsProvider provider;
+        static UGFSettingsProvider s_Provider;
         [SettingsProvider]
         public static SettingsProvider CreateMyCustomSettingsProvider()
         {
-            if (UGFSettings.Instance && provider == null)
+            if (UGFSettings.Instance && s_Provider == null)
             {
-                provider = new UGFSettingsProvider();
+                s_Provider = new UGFSettingsProvider();
                 using (var so = new SerializedObject(UGFSettings.Instance))
                 {
-                    provider.keywords = GetSearchKeywordsFromSerializedObject(so);
+                    s_Provider.keywords = GetSearchKeywordsFromSerializedObject(so);
                 }
             }
-            return provider;
+            return s_Provider;
         }
     }
 }

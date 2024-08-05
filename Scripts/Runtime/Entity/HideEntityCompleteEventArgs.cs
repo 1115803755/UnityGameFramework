@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 隐藏实体完成事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(HideEntityCompleteEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(HideEntityCompleteEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化隐藏实体完成事件的新实例。
@@ -39,7 +39,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Config")]
     public sealed class ConfigComponent : GameFrameworkComponent
     {
-        private const int DefaultPriority = 0;
+        private const int DEFAULT_PRIORITY = 0;
 
         private IConfigManager m_ConfigManager = null;
         private EventComponent m_EventComponent = null;

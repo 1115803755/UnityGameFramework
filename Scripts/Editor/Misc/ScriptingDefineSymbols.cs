@@ -15,7 +15,7 @@ namespace UnityGameFramework.Editor
     /// </summary>
     public static class ScriptingDefineSymbols
     {
-        private static readonly BuildTargetGroup[] BuildTargetGroups = new BuildTargetGroup[]
+        private static readonly BuildTargetGroup[] s_BuildTargetGroups = new BuildTargetGroup[]
         {
             BuildTargetGroup.Standalone,
             BuildTargetGroup.iOS,
@@ -111,7 +111,7 @@ namespace UnityGameFramework.Editor
                 return;
             }
 
-            foreach (BuildTargetGroup buildTargetGroup in BuildTargetGroups)
+            foreach (BuildTargetGroup buildTargetGroup in s_BuildTargetGroups)
             {
                 AddScriptingDefineSymbol(buildTargetGroup, scriptingDefineSymbol);
             }
@@ -128,7 +128,7 @@ namespace UnityGameFramework.Editor
                 return;
             }
 
-            foreach (BuildTargetGroup buildTargetGroup in BuildTargetGroups)
+            foreach (BuildTargetGroup buildTargetGroup in s_BuildTargetGroups)
             {
                 RemoveScriptingDefineSymbol(buildTargetGroup, scriptingDefineSymbol);
             }

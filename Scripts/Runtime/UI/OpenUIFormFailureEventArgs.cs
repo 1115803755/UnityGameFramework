@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 打开界面失败事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(OpenUIFormFailureEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(OpenUIFormFailureEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化打开界面失败事件的新实例。
@@ -40,7 +40,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

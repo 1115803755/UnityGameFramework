@@ -22,11 +22,11 @@ namespace UnityGameFramework.Editor.ResourceTools
 {
     public sealed partial class ResourceBuilderController
     {
-        private const string RemoteVersionListFileName = "GameFrameworkVersion.dat";
-        private const string LocalVersionListFileName = "GameFrameworkList.dat";
-        private const string DefaultExtension = "dat";
-        private const string NoneOptionName = "<None>";
-        private static readonly int AssetsStringLength = "Assets".Length;
+        private const string REMOTE_VERSION_LIST_FILE_NAME = "GameFrameworkVersion.dat";
+        private const string LOCAL_VERSION_LIST_FILE_NAME = "GameFrameworkList.dat";
+        private const string DEFAULT_EXTENSION = "dat";
+        private const string NONE_OPTION_NAME = "<None>";
+        private static readonly int s_AssetsStringLength = "Assets".Length;
 
         private readonly string m_ConfigurationPath;
         private readonly ResourceCollection m_ResourceCollection;
@@ -97,12 +97,12 @@ namespace UnityGameFramework.Editor.ResourceTools
 
             m_CompressionHelperTypeNames = new List<string>
             {
-                NoneOptionName
+                NONE_OPTION_NAME
             };
 
             m_BuildEventHandlerTypeNames = new List<string>
             {
-                NoneOptionName
+                NONE_OPTION_NAME
             };
 
             m_CompressionHelperTypeNames.AddRange(Type.GetRuntimeOrEditorTypeNames(typeof(Utility.Compression.ICompressionHelper)));
@@ -1021,7 +1021,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             string fullName = GetResourceFullName(name, variant);
             ResourceData resourceData = m_ResourceDatas[fullName];
             string assetName = resourceData.GetAssetNames()[0];
-            string assetPath = Utility.Path.GetRegularPath(Application.dataPath.Substring(0, Application.dataPath.Length - AssetsStringLength) + assetName);
+            string assetPath = Utility.Path.GetRegularPath(Application.dataPath.Substring(0, Application.dataPath.Length - s_AssetsStringLength) + assetName);
 
             byte[] bytes = File.ReadAllBytes(assetPath);
             int length = bytes.Length;
@@ -1081,7 +1081,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             serializer.RegisterSerializeCallback(0, BuiltinVersionListSerializer.PackageVersionListSerializeCallback_V0);
             serializer.RegisterSerializeCallback(1, BuiltinVersionListSerializer.PackageVersionListSerializeCallback_V1);
             serializer.RegisterSerializeCallback(2, BuiltinVersionListSerializer.PackageVersionListSerializeCallback_V2);
-            string packageVersionListPath = Utility.Path.GetRegularPath(Path.Combine(outputPackagePath, RemoteVersionListFileName));
+            string packageVersionListPath = Utility.Path.GetRegularPath(Path.Combine(outputPackagePath, REMOTE_VERSION_LIST_FILE_NAME));
             using (FileStream fileStream = new FileStream(packageVersionListPath, FileMode.Create, FileAccess.Write))
             {
                 if (!serializer.Serialize(fileStream, versionList))
@@ -1130,7 +1130,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             serializer.RegisterSerializeCallback(0, BuiltinVersionListSerializer.UpdatableVersionListSerializeCallback_V0);
             serializer.RegisterSerializeCallback(1, BuiltinVersionListSerializer.UpdatableVersionListSerializeCallback_V1);
             serializer.RegisterSerializeCallback(2, BuiltinVersionListSerializer.UpdatableVersionListSerializeCallback_V2);
-            string updatableVersionListPath = Utility.Path.GetRegularPath(Path.Combine(outputFullPath, RemoteVersionListFileName));
+            string updatableVersionListPath = Utility.Path.GetRegularPath(Path.Combine(outputFullPath, REMOTE_VERSION_LIST_FILE_NAME));
             using (FileStream fileStream = new FileStream(updatableVersionListPath, FileMode.Create, FileAccess.Write))
             {
                 if (!serializer.Serialize(fileStream, versionList))
@@ -1146,8 +1146,8 @@ namespace UnityGameFramework.Editor.ResourceTools
             int compressedLength = bytes.Length;
             File.WriteAllBytes(updatableVersionListPath, bytes);
             int compressedHashCode = Utility.Verifier.GetCrc32(bytes);
-            int dotPosition = RemoteVersionListFileName.LastIndexOf('.');
-            string versionListFullNameWithCrc32 = Utility.Text.Format("{0}.{2:x8}.{1}", RemoteVersionListFileName.Substring(0, dotPosition), RemoteVersionListFileName.Substring(dotPosition + 1), hashCode);
+            int dotPosition = REMOTE_VERSION_LIST_FILE_NAME.LastIndexOf('.');
+            string versionListFullNameWithCrc32 = Utility.Text.Format("{0}.{2:x8}.{1}", REMOTE_VERSION_LIST_FILE_NAME.Substring(0, dotPosition), REMOTE_VERSION_LIST_FILE_NAME.Substring(dotPosition + 1), hashCode);
             string updatableVersionListPathWithCrc32 = Utility.Path.GetRegularPath(Path.Combine(outputFullPath, versionListFullNameWithCrc32));
             File.Move(updatableVersionListPath, updatableVersionListPathWithCrc32);
 
@@ -1178,7 +1178,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             serializer.RegisterSerializeCallback(0, BuiltinVersionListSerializer.LocalVersionListSerializeCallback_V0);
             serializer.RegisterSerializeCallback(1, BuiltinVersionListSerializer.LocalVersionListSerializeCallback_V1);
             serializer.RegisterSerializeCallback(2, BuiltinVersionListSerializer.LocalVersionListSerializeCallback_V2);
-            string readOnlyVersionListPath = Utility.Path.GetRegularPath(Path.Combine(outputPackedPath, LocalVersionListFileName));
+            string readOnlyVersionListPath = Utility.Path.GetRegularPath(Path.Combine(outputPackedPath, LOCAL_VERSION_LIST_FILE_NAME));
             using (FileStream fileStream = new FileStream(readOnlyVersionListPath, FileMode.Create, FileAccess.Write))
             {
                 if (!serializer.Serialize(fileStream, versionList))
@@ -1325,7 +1325,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             foreach (string fileSystemName in fileSystemNames)
             {
                 int fileCount = GetResourceIndexesFromFileSystem(resourceDatas, fileSystemName).Length;
-                string fullPath = Utility.Path.GetRegularPath(Path.Combine(outputPath, Utility.Text.Format("{0}.{1}", fileSystemName, DefaultExtension)));
+                string fullPath = Utility.Path.GetRegularPath(Path.Combine(outputPath, Utility.Text.Format("{0}.{1}", fileSystemName, DEFAULT_EXTENSION)));
                 string directory = Path.GetDirectoryName(fullPath);
                 if (!Directory.Exists(directory))
                 {
@@ -1387,7 +1387,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
             if (OutputFullSelected)
             {
-                string fullNameWithCrc32AndExtension = variant != null ? Utility.Text.Format("{0}.{1}.{2:x8}.{3}", name, variant, hashCode, DefaultExtension) : Utility.Text.Format("{0}.{1:x8}.{2}", name, hashCode, DefaultExtension);
+                string fullNameWithCrc32AndExtension = variant != null ? Utility.Text.Format("{0}.{1}.{2:x8}.{3}", name, variant, hashCode, DEFAULT_EXTENSION) : Utility.Text.Format("{0}.{1:x8}.{2}", name, hashCode, DEFAULT_EXTENSION);
                 string fullPath = Utility.Path.GetRegularPath(Path.Combine(outputFullPath, fullNameWithCrc32AndExtension));
                 string fullDirectoryName = Path.GetDirectoryName(fullPath);
                 if (!Directory.Exists(fullDirectoryName))
@@ -1460,7 +1460,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                     return false;
                 }
 
-                string assetFileFullName = Application.dataPath.Substring(0, Application.dataPath.Length - AssetsStringLength) + assetName;
+                string assetFileFullName = Application.dataPath.Substring(0, Application.dataPath.Length - s_AssetsStringLength) + assetName;
                 if (!File.Exists(assetFileFullName))
                 {
                     m_BuildReport.LogError("Can not find asset '{0}'.", assetFileFullName);
@@ -1569,7 +1569,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 }
             }
 
-            return DefaultExtension;
+            return DEFAULT_EXTENSION;
         }
     }
 }

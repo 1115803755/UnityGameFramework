@@ -14,9 +14,9 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public static partial class BuiltinVersionListSerializer
     {
-        private const string DefaultExtension = "dat";
-        private const int CachedHashBytesLength = 4;
-        private static readonly byte[] s_CachedHashBytes = new byte[CachedHashBytesLength];
+        private const string DEFAULT_EXTENSION = "dat";
+        private const int CACHED_HASH_BYTES_LENGTH = 4;
+        private static readonly byte[] s_CachedHashBytes = new byte[CACHED_HASH_BYTES_LENGTH];
 
         private static int AssetNameToDependencyAssetNamesComparer(KeyValuePair<string, string[]> a, KeyValuePair<string, string[]> b)
         {

@@ -18,12 +18,12 @@ namespace UnityGameFramework.Editor.Settings
         /// <summary>
         /// 
         /// </summary>
-        public static Action OnEditorFocused;
+        public static Action s_OnEditorFocused;
 
         /// <summary>
         /// 
         /// </summary>
-        static bool isFocused;
+        static bool s_IsFocused;
 
         /// <summary>
         /// 
@@ -35,13 +35,13 @@ namespace UnityGameFramework.Editor.Settings
         /// </summary>
         static void Update()
         {
-            if (isFocused != InternalEditorUtility.isApplicationActive)
+            if (s_IsFocused != InternalEditorUtility.isApplicationActive)
             {
-                isFocused = InternalEditorUtility.isApplicationActive;
-                if (isFocused)
+                s_IsFocused = InternalEditorUtility.isApplicationActive;
+                if (s_IsFocused)
                 {
                     UGFSettings.LoadOrCreate();
-                    OnEditorFocused?.Invoke();
+                    s_OnEditorFocused?.Invoke();
                 }
             }
         }

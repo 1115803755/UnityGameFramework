@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 打开界面时加载依赖资源事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(OpenUIFormDependencyAssetEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(OpenUIFormDependencyAssetEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化打开界面时加载依赖资源事件的新实例。
@@ -42,7 +42,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

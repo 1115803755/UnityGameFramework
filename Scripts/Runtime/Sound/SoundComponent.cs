@@ -25,7 +25,7 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Sound")]
     public sealed partial class SoundComponent : GameFrameworkComponent
     {
-        private const int DefaultPriority = 0;
+        private const int DEFAULT_PRIORITY = 0;
 
         private ISoundManager m_SoundManager = null;
         private EventComponent m_EventComponent = null;
@@ -339,7 +339,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>声音的序列编号。</returns>
         public int PlaySound(string soundAssetName, string soundGroupName)
         {
-            return PlaySound(soundAssetName, soundGroupName, DefaultPriority, null, null, null);
+            return PlaySound(soundAssetName, soundGroupName, DEFAULT_PRIORITY, null, null, null);
         }
 
         /// <summary>
@@ -363,7 +363,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>声音的序列编号。</returns>
         public int PlaySound(string soundAssetName, string soundGroupName, PlaySoundParams playSoundParams)
         {
-            return PlaySound(soundAssetName, soundGroupName, DefaultPriority, playSoundParams, null, null);
+            return PlaySound(soundAssetName, soundGroupName, DEFAULT_PRIORITY, playSoundParams, null, null);
         }
 
         /// <summary>
@@ -375,7 +375,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>声音的序列编号。</returns>
         public int PlaySound(string soundAssetName, string soundGroupName, Entity bindingEntity)
         {
-            return PlaySound(soundAssetName, soundGroupName, DefaultPriority, null, bindingEntity, null);
+            return PlaySound(soundAssetName, soundGroupName, DEFAULT_PRIORITY, null, bindingEntity, null);
         }
 
         /// <summary>
@@ -387,7 +387,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>声音的序列编号。</returns>
         public int PlaySound(string soundAssetName, string soundGroupName, Vector3 worldPosition)
         {
-            return PlaySound(soundAssetName, soundGroupName, DefaultPriority, null, worldPosition, null);
+            return PlaySound(soundAssetName, soundGroupName, DEFAULT_PRIORITY, null, worldPosition, null);
         }
 
         /// <summary>
@@ -399,7 +399,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>声音的序列编号。</returns>
         public int PlaySound(string soundAssetName, string soundGroupName, object userData)
         {
-            return PlaySound(soundAssetName, soundGroupName, DefaultPriority, null, null, userData);
+            return PlaySound(soundAssetName, soundGroupName, DEFAULT_PRIORITY, null, null, userData);
         }
 
         /// <summary>

@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Localization")]
     public sealed class LocalizationComponent : GameFrameworkComponent
     {
-        private const int DefaultPriority = 0;
+        private const int DEFAULT_PRIORITY = 0;
 
         private ILocalizationManager m_LocalizationManager = null;
         private EventComponent m_EventComponent = null;

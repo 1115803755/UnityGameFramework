@@ -19,8 +19,8 @@ namespace UnityGameFramework.Editor.ResourceTools
     {
         private sealed class BuildReport
         {
-            private const string BuildReportName = "BuildReport.xml";
-            private const string BuildLogName = "BuildLog.txt";
+            private const string BUILD_REPORT_NAME = "BuildReport.xml";
+            private const string BUILD_LOG_NAME = "BuildLog.txt";
 
             private string m_BuildReportName = null;
             private string m_BuildLogName = null;
@@ -50,8 +50,8 @@ namespace UnityGameFramework.Editor.ResourceTools
                     throw new GameFrameworkException("Build report path is invalid.");
                 }
 
-                m_BuildReportName = Utility.Path.GetRegularPath(Path.Combine(buildReportPath, BuildReportName));
-                m_BuildLogName = Utility.Path.GetRegularPath(Path.Combine(buildReportPath, BuildLogName));
+                m_BuildReportName = Utility.Path.GetRegularPath(Path.Combine(buildReportPath, BUILD_REPORT_NAME));
+                m_BuildLogName = Utility.Path.GetRegularPath(Path.Combine(buildReportPath, BUILD_LOG_NAME));
                 m_ProductName = productName;
                 m_CompanyName = companyName;
                 m_GameIdentifier = gameIdentifier;

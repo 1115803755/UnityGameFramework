@@ -23,9 +23,9 @@ namespace UnityGameFramework.Editor.ResourceTools
     /// </summary>
     public sealed class ResourceCollection
     {
-        private const string SceneExtension = ".unity";
-        private static readonly Regex ResourceNameRegex = new Regex(@"^([A-Za-z0-9\._-]+/)*[A-Za-z0-9\._-]+$");
-        private static readonly Regex ResourceVariantRegex = new Regex(@"^[a-z0-9_-]+$");
+        private const string SCENE_EXTENSION = ".unity";
+        private static readonly Regex s_ResourceNameRegex = new Regex(@"^([A-Za-z0-9\._-]+/)*[A-Za-z0-9\._-]+$");
+        private static readonly Regex s_ResourceVariantRegex = new Regex(@"^[a-z0-9_-]+$");
 
         private readonly string m_ConfigurationPath;
         private readonly SortedDictionary<string, Resource> m_Resources;
@@ -321,7 +321,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 return false;
             }
 
-            if (fileSystem != null && !ResourceNameRegex.IsMatch(fileSystem))
+            if (fileSystem != null && !s_ResourceNameRegex.IsMatch(fileSystem))
             {
                 return false;
             }
@@ -510,7 +510,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 }
             }
 
-            bool isScene = assetName.EndsWith(SceneExtension, StringComparison.Ordinal);
+            bool isScene = assetName.EndsWith(SCENE_EXTENSION, StringComparison.Ordinal);
             if (isScene && resource.AssetType == AssetType.Asset || !isScene && resource.AssetType == AssetType.Scene)
             {
                 return false;
@@ -562,12 +562,12 @@ namespace UnityGameFramework.Editor.ResourceTools
                 return false;
             }
 
-            if (!ResourceNameRegex.IsMatch(name))
+            if (!s_ResourceNameRegex.IsMatch(name))
             {
                 return false;
             }
 
-            if (variant != null && !ResourceVariantRegex.IsMatch(variant))
+            if (variant != null && !s_ResourceVariantRegex.IsMatch(variant))
             {
                 return false;
             }

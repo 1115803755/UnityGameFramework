@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 网络心跳包丢失事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(NetworkMissHeartBeatEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(NetworkMissHeartBeatEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化网络心跳包丢失事件的新实例。
@@ -37,7 +37,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

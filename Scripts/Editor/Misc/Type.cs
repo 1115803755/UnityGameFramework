@@ -17,7 +17,7 @@ namespace UnityGameFramework.Editor
     /// </summary>
     internal static class Type
     {
-        private static readonly string[] RuntimeAssemblyNames =
+        private static readonly string[] s_RuntimeAssemblyNames =
         {
 #if UNITY_2017_3_OR_NEWER
             "UnityGameFramework.Runtime",
@@ -25,7 +25,7 @@ namespace UnityGameFramework.Editor
             "Assembly-CSharp",
         };
 
-        private static readonly string[] RuntimeOrEditorAssemblyNames =
+        private static readonly string[] s_RuntimeOrEditorAssemblyNames =
         {
 #if UNITY_2017_3_OR_NEWER
             "UnityGameFramework.Runtime",
@@ -42,8 +42,8 @@ namespace UnityGameFramework.Editor
         /// </summary>
         static Type()
         {
-            List<string> tempRuntimeAssemblyNames = RuntimeAssemblyNames.ToList();
-            List<string> tempRuntimeOrEditorAssemblyNames = RuntimeOrEditorAssemblyNames.ToList();
+            List<string> tempRuntimeAssemblyNames = s_RuntimeAssemblyNames.ToList();
+            List<string> tempRuntimeOrEditorAssemblyNames = s_RuntimeOrEditorAssemblyNames.ToList();
             foreach (System.Type type in Utility.Assembly.GetTypes())
             {
                 foreach (FieldInfo fieldInfo in type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly))
@@ -63,8 +63,8 @@ namespace UnityGameFramework.Editor
                 }
             }
 
-            RuntimeAssemblyNames = tempRuntimeAssemblyNames.ToArray();
-            RuntimeOrEditorAssemblyNames = tempRuntimeOrEditorAssemblyNames.ToArray();
+            s_RuntimeAssemblyNames = tempRuntimeAssemblyNames.ToArray();
+            s_RuntimeOrEditorAssemblyNames = tempRuntimeOrEditorAssemblyNames.ToArray();
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace UnityGameFramework.Editor
         /// <returns>指定基类的所有子类的名称。</returns>
         internal static string[] GetRuntimeTypeNames(System.Type typeBase)
         {
-            return GetTypeNames(typeBase, RuntimeAssemblyNames);
+            return GetTypeNames(typeBase, s_RuntimeAssemblyNames);
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace UnityGameFramework.Editor
         /// <returns>指定基类的所有子类的名称。</returns>
         internal static string[] GetRuntimeOrEditorTypeNames(System.Type typeBase)
         {
-            return GetTypeNames(typeBase, RuntimeOrEditorAssemblyNames);
+            return GetTypeNames(typeBase, s_RuntimeOrEditorAssemblyNames);
         }
 
         private static string[] GetTypeNames(System.Type typeBase, string[] assemblyNames)

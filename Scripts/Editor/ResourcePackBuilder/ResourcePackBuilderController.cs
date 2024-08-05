@@ -20,11 +20,11 @@ namespace UnityGameFramework.Editor.ResourceTools
 {
     public sealed class ResourcePackBuilderController
     {
-        private const string DefaultResourcePackName = "GameFrameworkResourcePack";
-        private const string DefaultExtension = "dat";
-        private const string NoneOptionName = "<None>";
-        private static readonly string[] EmptyStringArray = new string[0];
-        private static readonly UpdatableVersionList.Resource[] EmptyResourceArray = new UpdatableVersionList.Resource[0];
+        private const string DEFAULT_RESOURCE_PACK_NAME = "GameFrameworkResourcePack";
+        private const string DEFAULT_EXTENSION = "dat";
+        private const string NONE_OPTION_NAME = "<None>";
+        private static readonly string[] s_EmptyStringArray = new string[0];
+        private static readonly UpdatableVersionList.Resource[] s_EmptyResourceArray = new UpdatableVersionList.Resource[0];
 
         private readonly string m_ConfigurationPath;
         private readonly List<string> m_CompressionHelperTypeNames;
@@ -48,7 +48,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
             m_CompressionHelperTypeNames = new List<string>
             {
-                NoneOptionName
+                NONE_OPTION_NAME
             };
 
             m_CompressionHelperTypeNames.AddRange(Type.GetRuntimeOrEditorTypeNames(typeof(Utility.Compression.ICompressionHelper)));
@@ -261,14 +261,14 @@ namespace UnityGameFramework.Editor.ResourceTools
         {
             if (Platform == Platform.Undefined || !IsValidWorkingDirectory)
             {
-                return EmptyStringArray;
+                return s_EmptyStringArray;
             }
 
             string platformName = Platform.ToString();
             DirectoryInfo sourceDirectoryInfo = new DirectoryInfo(SourcePath);
             if (!sourceDirectoryInfo.Exists)
             {
-                return EmptyStringArray;
+                return s_EmptyStringArray;
             }
 
             List<string> versionNames = new List<string>();
@@ -388,8 +388,8 @@ namespace UnityGameFramework.Editor.ResourceTools
                     Directory.CreateDirectory(OutputPath);
                 }
 
-                string defaultBackupDiffPath = Path.Combine(OutputPath, DefaultResourcePackName);
-                string defaultResourcePackName = Utility.Text.Format("{0}.{1}", defaultBackupDiffPath, DefaultExtension);
+                string defaultBackupDiffPath = Path.Combine(OutputPath, DEFAULT_RESOURCE_PACK_NAME);
+                string defaultResourcePackName = Utility.Text.Format("{0}.{1}", defaultBackupDiffPath, DEFAULT_EXTENSION);
                 if (File.Exists(defaultResourcePackName))
                 {
                     File.Delete(defaultResourcePackName);
@@ -429,7 +429,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                 }
 
                 List<ResourcePackVersionList.Resource> resources = new List<ResourcePackVersionList.Resource>();
-                UpdatableVersionList.Resource[] sourceResources = sourceUpdatableVersionList.IsValid ? sourceUpdatableVersionList.GetResources() : EmptyResourceArray;
+                UpdatableVersionList.Resource[] sourceResources = sourceUpdatableVersionList.IsValid ? sourceUpdatableVersionList.GetResources() : s_EmptyResourceArray;
                 UpdatableVersionList.Resource[] targetResources = targetUpdatableVersionList.GetResources();
                 long offset = 0L;
                 foreach (UpdatableVersionList.Resource targetResource in targetResources)
@@ -511,8 +511,8 @@ namespace UnityGameFramework.Editor.ResourceTools
                     }
                 }
 
-                string backupDiffPath = Path.Combine(OutputPath, Utility.Text.Format("{0}-{1}-{2}", DefaultResourcePackName, sourceVersion ?? GetNoneVersion(targetVersion), targetVersion));
-                string resourcePackName = Utility.Text.Format("{0}.{1:x8}.{2}", backupDiffPath, hashCode, DefaultExtension);
+                string backupDiffPath = Path.Combine(OutputPath, Utility.Text.Format("{0}-{1}-{2}", DEFAULT_RESOURCE_PACK_NAME, sourceVersion ?? GetNoneVersion(targetVersion), targetVersion));
+                string resourcePackName = Utility.Text.Format("{0}.{1:x8}.{2}", backupDiffPath, hashCode, DEFAULT_EXTENSION);
                 if (File.Exists(resourcePackName))
                 {
                     File.Delete(resourcePackName);
@@ -556,7 +556,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
         private string GetResourceFullName(string name, string variant, int hashCode)
         {
-            return !string.IsNullOrEmpty(variant) ? Utility.Text.Format("{0}.{1}.{2:x8}.{3}", name, variant, hashCode, DefaultExtension) : Utility.Text.Format("{0}.{1:x8}.{2}", name, hashCode, DefaultExtension);
+            return !string.IsNullOrEmpty(variant) ? Utility.Text.Format("{0}.{1}.{2:x8}.{3}", name, variant, hashCode, DEFAULT_EXTENSION) : Utility.Text.Format("{0}.{1:x8}.{2}", name, hashCode, DEFAULT_EXTENSION);
         }
     }
 }

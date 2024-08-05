@@ -15,7 +15,7 @@ namespace UnityGameFramework.Editor
 {
     internal sealed class HelperInfo<T> where T : MonoBehaviour
     {
-        private const string CustomOptionName = "<Custom>";
+        private const string CUSTOM_OPTION_NAME = "<Custom>";
 
         private readonly string m_Name;
 
@@ -64,7 +64,7 @@ namespace UnityGameFramework.Editor
         {
             List<string> helperTypeNameList = new List<string>
             {
-                CustomOptionName
+                CUSTOM_OPTION_NAME
             };
 
             helperTypeNameList.AddRange(Type.GetRuntimeTypeNames(typeof(T)));

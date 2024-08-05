@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public class DefaultDataTableHelper : DataTableHelperBase
     {
-        private static readonly string BytesAssetExtension = ".bytes";
+        private static readonly string s_BytesAssetExtension = ".bytes";
 
         private ResourceComponent m_ResourceComponent = null;
 
@@ -36,7 +36,7 @@ namespace UnityGameFramework.Runtime
             TextAsset dataTableTextAsset = dataTableAsset as TextAsset;
             if (dataTableTextAsset != null)
             {
-                if (dataTableAssetName.EndsWith(BytesAssetExtension, StringComparison.Ordinal))
+                if (dataTableAssetName.EndsWith(s_BytesAssetExtension, StringComparison.Ordinal))
                 {
                     return dataTable.ParseData(dataTableTextAsset.bytes, userData);
                 }
@@ -62,7 +62,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否读取数据表成功。</returns>
         public override bool ReadData(DataTableBase dataTable, string dataTableAssetName, byte[] dataTableBytes, int startIndex, int length, object userData)
         {
-            if (dataTableAssetName.EndsWith(BytesAssetExtension, StringComparison.Ordinal))
+            if (dataTableAssetName.EndsWith(s_BytesAssetExtension, StringComparison.Ordinal))
             {
                 return dataTable.ParseData(dataTableBytes, startIndex, length, userData);
             }

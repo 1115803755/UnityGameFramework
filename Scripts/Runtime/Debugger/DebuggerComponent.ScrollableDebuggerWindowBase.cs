@@ -15,7 +15,7 @@ namespace UnityGameFramework.Runtime
     {
         private abstract class ScrollableDebuggerWindowBase : IDebuggerWindow
         {
-            private const float TitleWidth = 240f;
+            private const float TITLE_WIDTH = 240f;
             private Vector2 m_ScrollPosition = Vector2.zero;
 
             public virtual void Initialize(params object[] args)
@@ -53,7 +53,7 @@ namespace UnityGameFramework.Runtime
             {
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label(title, GUILayout.Width(TitleWidth));
+                    GUILayout.Label(title, GUILayout.Width(TITLE_WIDTH));
                     if (GUILayout.Button(content, "label"))
                     {
                         CopyToClipboard(content);

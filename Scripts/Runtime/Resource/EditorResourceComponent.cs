@@ -25,8 +25,8 @@ namespace UnityGameFramework.Runtime
     [DisallowMultipleComponent]
     public sealed class EditorResourceComponent : MonoBehaviour, IResourceManager
     {
-        private const int DefaultPriority = 0;
-        private static readonly int AssetsStringLength = "Assets".Length;
+        private const int DEFAULT_PRIORITY = 0;
+        private static readonly int s_AssetsStringLength = "Assets".Length;
 
         [SerializeField]
         private bool m_EnableCachedAssets = true;
@@ -961,7 +961,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="loadAssetCallbacks">加载资源回调函数集。</param>
         public void LoadAsset(string assetName, LoadAssetCallbacks loadAssetCallbacks)
         {
-            LoadAsset(assetName, null, DefaultPriority, loadAssetCallbacks, null);
+            LoadAsset(assetName, null, DEFAULT_PRIORITY, loadAssetCallbacks, null);
         }
 
         /// <summary>
@@ -972,7 +972,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="loadAssetCallbacks">加载资源回调函数集。</param>
         public void LoadAsset(string assetName, Type assetType, LoadAssetCallbacks loadAssetCallbacks)
         {
-            LoadAsset(assetName, assetType, DefaultPriority, loadAssetCallbacks, null);
+            LoadAsset(assetName, assetType, DEFAULT_PRIORITY, loadAssetCallbacks, null);
         }
 
         /// <summary>
@@ -994,7 +994,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void LoadAsset(string assetName, LoadAssetCallbacks loadAssetCallbacks, object userData)
         {
-            LoadAsset(assetName, null, DefaultPriority, loadAssetCallbacks, userData);
+            LoadAsset(assetName, null, DEFAULT_PRIORITY, loadAssetCallbacks, userData);
         }
 
         /// <summary>
@@ -1018,7 +1018,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void LoadAsset(string assetName, Type assetType, LoadAssetCallbacks loadAssetCallbacks, object userData)
         {
-            LoadAsset(assetName, assetType, DefaultPriority, loadAssetCallbacks, userData);
+            LoadAsset(assetName, assetType, DEFAULT_PRIORITY, loadAssetCallbacks, userData);
         }
 
         /// <summary>
@@ -1098,7 +1098,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="loadSceneCallbacks">加载场景回调函数集。</param>
         public void LoadScene(string sceneAssetName, LoadSceneCallbacks loadSceneCallbacks)
         {
-            LoadScene(sceneAssetName, DefaultPriority, loadSceneCallbacks, null);
+            LoadScene(sceneAssetName, DEFAULT_PRIORITY, loadSceneCallbacks, null);
         }
 
         /// <summary>
@@ -1120,7 +1120,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void LoadScene(string sceneAssetName, LoadSceneCallbacks loadSceneCallbacks, object userData)
         {
-            LoadScene(sceneAssetName, DefaultPriority, loadSceneCallbacks, userData);
+            LoadScene(sceneAssetName, DEFAULT_PRIORITY, loadSceneCallbacks, userData);
         }
 
         /// <summary>
@@ -1262,7 +1262,7 @@ namespace UnityGameFramework.Runtime
                 return null;
             }
 
-            return Application.dataPath.Substring(0, Application.dataPath.Length - AssetsStringLength) + binaryAssetName;
+            return Application.dataPath.Substring(0, Application.dataPath.Length - s_AssetsStringLength) + binaryAssetName;
         }
 
         /// <summary>
@@ -1587,7 +1587,7 @@ namespace UnityGameFramework.Runtime
                 return true;
             }
 
-            string assetFullName = Application.dataPath.Substring(0, Application.dataPath.Length - AssetsStringLength) + assetName;
+            string assetFullName = Application.dataPath.Substring(0, Application.dataPath.Length - s_AssetsStringLength) + assetName;
             if (string.IsNullOrEmpty(assetFullName))
             {
                 return false;

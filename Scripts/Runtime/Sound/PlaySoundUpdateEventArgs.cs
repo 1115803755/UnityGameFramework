@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 播放声音更新事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(PlaySoundUpdateEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(PlaySoundUpdateEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化播放声音更新事件的新实例。
@@ -42,7 +42,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

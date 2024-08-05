@@ -18,7 +18,7 @@ namespace UnityGameFramework.Editor
         /// <summary>
         /// 
         /// </summary>
-        private const string DefaultAssetRootPath = "Assets";
+        private const string DEFAULT_ASSET_ROOT_PATH = "Assets";
 
         /// <summary>
         /// 

@@ -17,9 +17,9 @@ namespace UnityGameFramework.Editor.ResourceTools
     /// </summary>
     internal sealed class ResourcePackBuilder : EditorWindow
     {
-        private static readonly string[] PlatformForDisplay = new string[] { "Windows", "Windows x64", "macOS", "Linux", "iOS", "Android", "Windows Store", "WebGL" };
-        private static readonly int[] LengthLimit = new int[] { 0, 128, 256, 512, 1024, 2048, 4096 };
-        private static readonly string[] LengthLimitForDisplay = new string[] { "<Unlimited>", "128 MB", "256 MB", "512 MB", "1 GB", "2 GB", "4 GB", "<Custom>" };
+        private static readonly string[] s_PlatformForDisplay = new string[] { "Windows", "Windows x64", "macOS", "Linux", "iOS", "Android", "Windows Store", "WebGL" };
+        private static readonly int[] s_LengthLimit = new int[] { 0, 128, 256, 512, 1024, 2048, 4096 };
+        private static readonly string[] s_LengthLimitForDisplay = new string[] { "<Unlimited>", "128 MB", "256 MB", "512 MB", "1 GB", "2 GB", "4 GB", "<Custom>" };
 
         private ResourcePackBuilderController m_Controller = null;
         private string[] m_VersionNames = null;
@@ -137,7 +137,7 @@ namespace UnityGameFramework.Editor.ResourceTools
                     EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Platform", GUILayout.Width(160f));
-                        int platformIndex = EditorGUILayout.Popup(m_PlatformIndex, PlatformForDisplay);
+                        int platformIndex = EditorGUILayout.Popup(m_PlatformIndex, s_PlatformForDisplay);
                         if (m_PlatformIndex != platformIndex)
                         {
                             m_PlatformIndex = platformIndex;
@@ -239,17 +239,17 @@ namespace UnityGameFramework.Editor.ResourceTools
                             EditorGUILayout.LabelField("Length Limit", GUILayout.Width(160f));
                             EditorGUILayout.BeginVertical();
                             {
-                                int lengthLimitIndex = EditorGUILayout.Popup(m_LengthLimitIndex, LengthLimitForDisplay);
+                                int lengthLimitIndex = EditorGUILayout.Popup(m_LengthLimitIndex, s_LengthLimitForDisplay);
                                 if (m_LengthLimitIndex != lengthLimitIndex)
                                 {
                                     m_LengthLimitIndex = lengthLimitIndex;
-                                    if (m_LengthLimitIndex < LengthLimit.Length)
+                                    if (m_LengthLimitIndex < s_LengthLimit.Length)
                                     {
-                                        m_Controller.LengthLimit = LengthLimit[m_LengthLimitIndex];
+                                        m_Controller.LengthLimit = s_LengthLimit[m_LengthLimitIndex];
                                     }
                                 }
 
-                                if (m_LengthLimitIndex >= LengthLimit.Length)
+                                if (m_LengthLimitIndex >= s_LengthLimit.Length)
                                 {
                                     EditorGUILayout.BeginHorizontal();
                                     {

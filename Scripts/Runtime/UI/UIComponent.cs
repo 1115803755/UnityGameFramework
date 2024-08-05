@@ -21,7 +21,7 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/UI")]
     public sealed partial class UIComponent : GameFrameworkComponent
     {
-        private const int DefaultPriority = 0;
+        private const int DEFAULT_PRIORITY = 0;
 
         private IUIManager m_UIManager = null;
         private EventComponent m_EventComponent = null;
@@ -492,7 +492,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>界面的序列编号。</returns>
         public int OpenUIForm(string uiFormAssetName, string uiGroupName)
         {
-            return OpenUIForm(uiFormAssetName, uiGroupName, DefaultPriority, false, null);
+            return OpenUIForm(uiFormAssetName, uiGroupName, DEFAULT_PRIORITY, false, null);
         }
 
         /// <summary>
@@ -516,7 +516,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>界面的序列编号。</returns>
         public int OpenUIForm(string uiFormAssetName, string uiGroupName, bool pauseCoveredUIForm)
         {
-            return OpenUIForm(uiFormAssetName, uiGroupName, DefaultPriority, pauseCoveredUIForm, null);
+            return OpenUIForm(uiFormAssetName, uiGroupName, DEFAULT_PRIORITY, pauseCoveredUIForm, null);
         }
 
         /// <summary>
@@ -528,7 +528,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>界面的序列编号。</returns>
         public int OpenUIForm(string uiFormAssetName, string uiGroupName, object userData)
         {
-            return OpenUIForm(uiFormAssetName, uiGroupName, DefaultPriority, false, userData);
+            return OpenUIForm(uiFormAssetName, uiGroupName, DEFAULT_PRIORITY, false, userData);
         }
 
         /// <summary>
@@ -567,7 +567,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>界面的序列编号。</returns>
         public int OpenUIForm(string uiFormAssetName, string uiGroupName, bool pauseCoveredUIForm, object userData)
         {
-            return OpenUIForm(uiFormAssetName, uiGroupName, DefaultPriority, pauseCoveredUIForm, userData);
+            return OpenUIForm(uiFormAssetName, uiGroupName, DEFAULT_PRIORITY, pauseCoveredUIForm, userData);
         }
 
         /// <summary>

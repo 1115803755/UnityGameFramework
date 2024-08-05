@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 网络连接关闭事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(NetworkClosedEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(NetworkClosedEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化网络连接关闭事件的新实例。
@@ -36,7 +36,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

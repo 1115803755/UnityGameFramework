@@ -15,7 +15,7 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public class DefaultFileSystemHelper : FileSystemHelperBase
     {
-        private const string AndroidFileSystemPrefixString = "jar:";
+        private const string ANDROID_FILE_SYSTEM_PREFIX_STRING = "jar:";
 
         /// <summary>
         /// 创建文件系统流。
@@ -26,7 +26,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>创建的文件系统流。</returns>
         public override FileSystemStream CreateFileSystemStream(string fullPath, FileSystemAccess access, bool createNew)
         {
-            if (fullPath.StartsWith(AndroidFileSystemPrefixString, StringComparison.Ordinal))
+            if (fullPath.StartsWith(ANDROID_FILE_SYSTEM_PREFIX_STRING, StringComparison.Ordinal))
             {
                 return new AndroidFileSystemStream(fullPath, access, createNew);
             }

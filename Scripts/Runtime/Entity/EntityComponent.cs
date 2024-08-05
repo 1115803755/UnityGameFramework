@@ -22,7 +22,7 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Entity")]
     public sealed partial class EntityComponent : GameFrameworkComponent
     {
-        private const int DefaultPriority = 0;
+        private const int DEFAULT_PRIORITY = 0;
 
         private IEntityManager m_EntityManager = null;
         private EventComponent m_EventComponent = null;
@@ -393,7 +393,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="entityGroupName">实体组名称。</param>
         public void ShowEntity<T>(int entityId, string entityAssetName, string entityGroupName) where T : EntityLogic
         {
-            ShowEntity(entityId, typeof(T), entityAssetName, entityGroupName, DefaultPriority, null);
+            ShowEntity(entityId, typeof(T), entityAssetName, entityGroupName, DEFAULT_PRIORITY, null);
         }
 
         /// <summary>
@@ -405,7 +405,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="entityGroupName">实体组名称。</param>
         public void ShowEntity(int entityId, Type entityLogicType, string entityAssetName, string entityGroupName)
         {
-            ShowEntity(entityId, entityLogicType, entityAssetName, entityGroupName, DefaultPriority, null);
+            ShowEntity(entityId, entityLogicType, entityAssetName, entityGroupName, DEFAULT_PRIORITY, null);
         }
 
         /// <summary>
@@ -444,7 +444,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void ShowEntity<T>(int entityId, string entityAssetName, string entityGroupName, object userData) where T : EntityLogic
         {
-            ShowEntity(entityId, typeof(T), entityAssetName, entityGroupName, DefaultPriority, userData);
+            ShowEntity(entityId, typeof(T), entityAssetName, entityGroupName, DEFAULT_PRIORITY, userData);
         }
 
         /// <summary>
@@ -457,7 +457,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void ShowEntity(int entityId, Type entityLogicType, string entityAssetName, string entityGroupName, object userData)
         {
-            ShowEntity(entityId, entityLogicType, entityAssetName, entityGroupName, DefaultPriority, userData);
+            ShowEntity(entityId, entityLogicType, entityAssetName, entityGroupName, DEFAULT_PRIORITY, userData);
         }
 
         /// <summary>

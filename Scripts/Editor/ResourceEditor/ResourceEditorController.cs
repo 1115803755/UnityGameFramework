@@ -18,7 +18,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 {
     public sealed class ResourceEditorController
     {
-        private const string DefaultSourceAssetRootPath = "Assets";
+        private const string DEFAULT_SOURCE_ASSET_ROOT_PATH = "Assets";
 
         private readonly string m_ConfigurationPath;
         private readonly ResourceCollection m_ResourceCollection;
@@ -75,7 +75,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             m_SourceAssetExceptLabelFilter = null;
             m_AssetSorter = AssetSorterType.Path;
 
-            SourceAssetRootPath = DefaultSourceAssetRootPath;
+            SourceAssetRootPath = DEFAULT_SOURCE_ASSET_ROOT_PATH;
         }
 
         public int ResourceCount
@@ -585,7 +585,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
             if (string.IsNullOrEmpty(m_SourceAssetRootPath))
             {
-                SourceAssetRootPath = DefaultSourceAssetRootPath;
+                SourceAssetRootPath = DEFAULT_SOURCE_ASSET_ROOT_PATH;
             }
 
             if (m_SourceAssetSearchRelativePaths.Count > 0)

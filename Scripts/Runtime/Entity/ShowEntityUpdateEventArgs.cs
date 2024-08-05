@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 显示实体更新事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(ShowEntityUpdateEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(ShowEntityUpdateEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化显示实体更新事件的新实例。
@@ -41,7 +41,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

@@ -19,8 +19,8 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Download")]
     public sealed class DownloadComponent : GameFrameworkComponent
     {
-        private const int DefaultPriority = 0;
-        private const int OneMegaBytes = 1024 * 1024;
+        private const int DEFAULT_PRIORITY = 0;
+        private const int ONE_MEGA_BYTES = 1024 * 1024;
 
         private IDownloadManager m_DownloadManager = null;
         private EventComponent m_EventComponent = null;
@@ -41,7 +41,7 @@ namespace UnityGameFramework.Runtime
         private float m_Timeout = 30f;
 
         [SerializeField]
-        private int m_FlushSize = OneMegaBytes;
+        private int m_FlushSize = ONE_MEGA_BYTES;
 
         /// <summary>
         /// 获取或设置下载是否被暂停。
@@ -243,7 +243,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增下载任务的序列编号。</returns>
         public int AddDownload(string downloadPath, string downloadUri)
         {
-            return AddDownload(downloadPath, downloadUri, null, DefaultPriority, null);
+            return AddDownload(downloadPath, downloadUri, null, DEFAULT_PRIORITY, null);
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增下载任务的序列编号。</returns>
         public int AddDownload(string downloadPath, string downloadUri, string tag)
         {
-            return AddDownload(downloadPath, downloadUri, tag, DefaultPriority, null);
+            return AddDownload(downloadPath, downloadUri, tag, DEFAULT_PRIORITY, null);
         }
 
         /// <summary>
@@ -279,7 +279,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增下载任务的序列编号。</returns>
         public int AddDownload(string downloadPath, string downloadUri, object userData)
         {
-            return AddDownload(downloadPath, downloadUri, null, DefaultPriority, userData);
+            return AddDownload(downloadPath, downloadUri, null, DEFAULT_PRIORITY, userData);
         }
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增下载任务的序列编号。</returns>
         public int AddDownload(string downloadPath, string downloadUri, string tag, object userData)
         {
-            return AddDownload(downloadPath, downloadUri, tag, DefaultPriority, userData);
+            return AddDownload(downloadPath, downloadUri, tag, DEFAULT_PRIORITY, userData);
         }
 
         /// <summary>

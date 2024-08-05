@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 资源应用开始事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(ResourceApplyStartEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(ResourceApplyStartEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化资源应用开始事件的新实例。
@@ -37,7 +37,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

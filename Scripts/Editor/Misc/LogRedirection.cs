@@ -22,7 +22,7 @@ namespace UnityGameFramework.Editor
     /// </summary>
     internal static class LogRedirection
     {
-        private static readonly Regex LogRegex = new Regex(@" \(at (.+)\:(\d+)\)\r?\n");
+        private static readonly Regex s_LogRegex = new Regex(@" \(at (.+)\:(\d+)\)\r?\n");
 
         [OnOpenAsset(0)]
         private static bool OnOpenAsset(int instanceId, int line)
@@ -38,7 +38,7 @@ namespace UnityGameFramework.Editor
                 return false;
             }
 
-            Match match = LogRegex.Match(selectedStackTrace);
+            Match match = s_LogRegex.Match(selectedStackTrace);
             if (!match.Success)
             {
                 return false;

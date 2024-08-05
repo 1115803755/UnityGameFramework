@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Web Request")]
     public sealed class WebRequestComponent : GameFrameworkComponent
     {
-        private const int DefaultPriority = 0;
+        private const int DEFAULT_PRIORITY = 0;
 
         private IWebRequestManager m_WebRequestManager = null;
         private EventComponent m_EventComponent = null;
@@ -195,7 +195,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增 Web 请求任务的序列编号。</returns>
         public int AddWebRequest(string webRequestUri)
         {
-            return AddWebRequest(webRequestUri, null, null, null, DefaultPriority, null);
+            return AddWebRequest(webRequestUri, null, null, null, DEFAULT_PRIORITY, null);
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增 Web 请求任务的序列编号。</returns>
         public int AddWebRequest(string webRequestUri, byte[] postData)
         {
-            return AddWebRequest(webRequestUri, postData, null, null, DefaultPriority, null);
+            return AddWebRequest(webRequestUri, postData, null, null, DEFAULT_PRIORITY, null);
         }
 
         /// <summary>
@@ -217,7 +217,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增 Web 请求任务的序列编号。</returns>
         public int AddWebRequest(string webRequestUri, WWWForm wwwForm)
         {
-            return AddWebRequest(webRequestUri, null, wwwForm, null, DefaultPriority, null);
+            return AddWebRequest(webRequestUri, null, wwwForm, null, DEFAULT_PRIORITY, null);
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增 Web 请求任务的序列编号。</returns>
         public int AddWebRequest(string webRequestUri, string tag)
         {
-            return AddWebRequest(webRequestUri, null, null, tag, DefaultPriority, null);
+            return AddWebRequest(webRequestUri, null, null, tag, DEFAULT_PRIORITY, null);
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增 Web 请求任务的序列编号。</returns>
         public int AddWebRequest(string webRequestUri, object userData)
         {
-            return AddWebRequest(webRequestUri, null, null, null, DefaultPriority, userData);
+            return AddWebRequest(webRequestUri, null, null, null, DEFAULT_PRIORITY, userData);
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增 Web 请求任务的序列编号。</returns>
         public int AddWebRequest(string webRequestUri, byte[] postData, string tag)
         {
-            return AddWebRequest(webRequestUri, postData, null, tag, DefaultPriority, null);
+            return AddWebRequest(webRequestUri, postData, null, tag, DEFAULT_PRIORITY, null);
         }
 
         /// <summary>
@@ -274,7 +274,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增 Web 请求任务的序列编号。</returns>
         public int AddWebRequest(string webRequestUri, WWWForm wwwForm, string tag)
         {
-            return AddWebRequest(webRequestUri, null, wwwForm, tag, DefaultPriority, null);
+            return AddWebRequest(webRequestUri, null, wwwForm, tag, DEFAULT_PRIORITY, null);
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增 Web 请求任务的序列编号。</returns>
         public int AddWebRequest(string webRequestUri, byte[] postData, object userData)
         {
-            return AddWebRequest(webRequestUri, postData, null, null, DefaultPriority, userData);
+            return AddWebRequest(webRequestUri, postData, null, null, DEFAULT_PRIORITY, userData);
         }
 
         /// <summary>
@@ -322,7 +322,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增 Web 请求任务的序列编号。</returns>
         public int AddWebRequest(string webRequestUri, WWWForm wwwForm, object userData)
         {
-            return AddWebRequest(webRequestUri, null, wwwForm, null, DefaultPriority, userData);
+            return AddWebRequest(webRequestUri, null, wwwForm, null, DEFAULT_PRIORITY, userData);
         }
 
         /// <summary>
@@ -346,7 +346,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增 Web 请求任务的序列编号。</returns>
         public int AddWebRequest(string webRequestUri, string tag, object userData)
         {
-            return AddWebRequest(webRequestUri, null, null, tag, DefaultPriority, userData);
+            return AddWebRequest(webRequestUri, null, null, tag, DEFAULT_PRIORITY, userData);
         }
 
         /// <summary>
@@ -397,7 +397,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增 Web 请求任务的序列编号。</returns>
         public int AddWebRequest(string webRequestUri, byte[] postData, string tag, object userData)
         {
-            return AddWebRequest(webRequestUri, postData, null, tag, DefaultPriority, userData);
+            return AddWebRequest(webRequestUri, postData, null, tag, DEFAULT_PRIORITY, userData);
         }
 
         /// <summary>
@@ -410,7 +410,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>新增 Web 请求任务的序列编号。</returns>
         public int AddWebRequest(string webRequestUri, WWWForm wwwForm, string tag, object userData)
         {
-            return AddWebRequest(webRequestUri, null, wwwForm, tag, DefaultPriority, userData);
+            return AddWebRequest(webRequestUri, null, wwwForm, tag, DEFAULT_PRIORITY, userData);
         }
 
         /// <summary>

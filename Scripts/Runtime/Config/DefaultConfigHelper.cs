@@ -19,9 +19,9 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public class DefaultConfigHelper : ConfigHelperBase
     {
-        private static readonly string[] ColumnSplitSeparator = new string[] { "\t" };
-        private static readonly string BytesAssetExtension = ".bytes";
-        private const int ColumnCount = 4;
+        private static readonly string[] s_ColumnSplitSeparator = new string[] { "\t" };
+        private static readonly string s_BytesAssetExtension = ".bytes";
+        private const int COLUMN_COUNT = 4;
 
         private ResourceComponent m_ResourceComponent = null;
 
@@ -38,7 +38,7 @@ namespace UnityGameFramework.Runtime
             TextAsset configTextAsset = configAsset as TextAsset;
             if (configTextAsset != null)
             {
-                if (configAssetName.EndsWith(BytesAssetExtension, StringComparison.Ordinal))
+                if (configAssetName.EndsWith(s_BytesAssetExtension, StringComparison.Ordinal))
                 {
                     return configManager.ParseData(configTextAsset.bytes, userData);
                 }
@@ -64,7 +64,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否读取全局配置成功。</returns>
         public override bool ReadData(IConfigManager configManager, string configAssetName, byte[] configBytes, int startIndex, int length, object userData)
         {
-            if (configAssetName.EndsWith(BytesAssetExtension, StringComparison.Ordinal))
+            if (configAssetName.EndsWith(s_BytesAssetExtension, StringComparison.Ordinal))
             {
                 return configManager.ParseData(configBytes, startIndex, length, userData);
             }
@@ -94,8 +94,8 @@ namespace UnityGameFramework.Runtime
                         continue;
                     }
 
-                    string[] splitedLine = configLineString.Split(ColumnSplitSeparator, StringSplitOptions.None);
-                    if (splitedLine.Length != ColumnCount)
+                    string[] splitedLine = configLineString.Split(s_ColumnSplitSeparator, StringSplitOptions.None);
+                    if (splitedLine.Length != COLUMN_COUNT)
                     {
                         Log.Warning("Can not parse config line string '{0}' which column count is invalid.", configLineString);
                         return false;

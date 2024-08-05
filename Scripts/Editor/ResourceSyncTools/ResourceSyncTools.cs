@@ -16,8 +16,8 @@ namespace UnityGameFramework.Editor.ResourceTools
     /// </summary>
     internal sealed class ResourceSyncTools : EditorWindow
     {
-        private const float ButtonHeight = 60f;
-        private const float ButtonSpace = 5f;
+        private const float BUTTON_HEIGHT = 60f;
+        private const float BUTTON_SPACE = 5f;
         private ResourceSyncToolsController m_Controller = null;
 
         [MenuItem("Game Framework/Resource Tools/Resource Sync Tools", false, 44)]
@@ -44,8 +44,8 @@ namespace UnityGameFramework.Editor.ResourceTools
         {
             EditorGUILayout.BeginVertical(GUILayout.Width(position.width), GUILayout.Height(position.height));
             {
-                GUILayout.Space(ButtonSpace);
-                if (GUILayout.Button("Remove All Asset Bundle Names in Project", GUILayout.Height(ButtonHeight)))
+                GUILayout.Space(BUTTON_SPACE);
+                if (GUILayout.Button("Remove All Asset Bundle Names in Project", GUILayout.Height(BUTTON_HEIGHT)))
                 {
                     if (!m_Controller.RemoveAllAssetBundleNames())
                     {
@@ -59,8 +59,8 @@ namespace UnityGameFramework.Editor.ResourceTools
                     AssetDatabase.Refresh();
                 }
 
-                GUILayout.Space(ButtonSpace);
-                if (GUILayout.Button("Sync ResourceCollection.xml to Project", GUILayout.Height(ButtonHeight)))
+                GUILayout.Space(BUTTON_SPACE);
+                if (GUILayout.Button("Sync ResourceCollection.xml to Project", GUILayout.Height(BUTTON_HEIGHT)))
                 {
                     if (!m_Controller.SyncToProject())
                     {
@@ -74,8 +74,8 @@ namespace UnityGameFramework.Editor.ResourceTools
                     AssetDatabase.Refresh();
                 }
 
-                GUILayout.Space(ButtonSpace);
-                if (GUILayout.Button("Sync ResourceCollection.xml from Project", GUILayout.Height(ButtonHeight)))
+                GUILayout.Space(BUTTON_SPACE);
+                if (GUILayout.Button("Sync ResourceCollection.xml from Project", GUILayout.Height(BUTTON_HEIGHT)))
                 {
                     if (!m_Controller.SyncFromProject())
                     {

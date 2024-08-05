@@ -19,9 +19,9 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public class DefaultLocalizationHelper : LocalizationHelperBase
     {
-        private static readonly string[] ColumnSplitSeparator = new string[] { "\t" };
-        private static readonly string BytesAssetExtension = ".bytes";
-        private const int ColumnCount = 4;
+        private static readonly string[] s_ColumnSplitSeparator = new string[] { "\t" };
+        private static readonly string s_BytesAssetExtension = ".bytes";
+        private const int COLUMN_COUNT = 4;
 
         private ResourceComponent m_ResourceComponent = null;
 
@@ -95,7 +95,7 @@ namespace UnityGameFramework.Runtime
             TextAsset dictionaryTextAsset = dictionaryAsset as TextAsset;
             if (dictionaryTextAsset != null)
             {
-                if (dictionaryAssetName.EndsWith(BytesAssetExtension, StringComparison.Ordinal))
+                if (dictionaryAssetName.EndsWith(s_BytesAssetExtension, StringComparison.Ordinal))
                 {
                     return localizationManager.ParseData(dictionaryTextAsset.bytes, userData);
                 }
@@ -121,7 +121,7 @@ namespace UnityGameFramework.Runtime
         /// <returns>是否读取字典成功。</returns>
         public override bool ReadData(ILocalizationManager localizationManager, string dictionaryAssetName, byte[] dictionaryBytes, int startIndex, int length, object userData)
         {
-            if (dictionaryAssetName.EndsWith(BytesAssetExtension, StringComparison.Ordinal))
+            if (dictionaryAssetName.EndsWith(s_BytesAssetExtension, StringComparison.Ordinal))
             {
                 return localizationManager.ParseData(dictionaryBytes, startIndex, length, userData);
             }
@@ -151,8 +151,8 @@ namespace UnityGameFramework.Runtime
                         continue;
                     }
 
-                    string[] splitedLine = dictionaryLineString.Split(ColumnSplitSeparator, StringSplitOptions.None);
-                    if (splitedLine.Length != ColumnCount)
+                    string[] splitedLine = dictionaryLineString.Split(s_ColumnSplitSeparator, StringSplitOptions.None);
+                    if (splitedLine.Length != COLUMN_COUNT)
                     {
                         Log.Warning("Can not parse dictionary line string '{0}' which column count is invalid.", dictionaryLineString);
                         return false;

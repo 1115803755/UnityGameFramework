@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
     {
         private sealed partial class RuntimeMemoryInformationWindow<T> : ScrollableDebuggerWindowBase where T : UnityEngine.Object
         {
-            private const int ShowSampleCount = 300;
+            private const int SHOW_SAMPLE_COUNT = 300;
 
             private readonly List<Sample> m_Samples = new List<Sample>();
             private readonly Comparison<Sample> m_SampleComparer = SampleComparer;
@@ -77,7 +77,7 @@ namespace UnityGameFramework.Runtime
                             GUILayout.EndHorizontal();
 
                             count++;
-                            if (count >= ShowSampleCount)
+                            if (count >= SHOW_SAMPLE_COUNT)
                             {
                                 break;
                             }

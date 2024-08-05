@@ -39,14 +39,14 @@ namespace UnityGameFramework.Runtime
                     return;
                 }
 
-                m_LastIconX = m_SettingComponent.GetFloat("Debugger.Icon.X", DefaultIconRect.x);
-                m_LastIconY = m_SettingComponent.GetFloat("Debugger.Icon.Y", DefaultIconRect.y);
-                m_LastWindowX = m_SettingComponent.GetFloat("Debugger.Window.X", DefaultWindowRect.x);
-                m_LastWindowY = m_SettingComponent.GetFloat("Debugger.Window.Y", DefaultWindowRect.y);
-                m_LastWindowWidth = m_SettingComponent.GetFloat("Debugger.Window.Width", DefaultWindowRect.width);
-                m_LastWindowHeight = m_SettingComponent.GetFloat("Debugger.Window.Height", DefaultWindowRect.height);
-                m_DebuggerComponent.WindowScale = m_LastWindowScale = m_SettingComponent.GetFloat("Debugger.Window.Scale", DefaultWindowScale);
-                m_DebuggerComponent.IconRect = new Rect(m_LastIconX, m_LastIconY, DefaultIconRect.width, DefaultIconRect.height);
+                m_LastIconX = m_SettingComponent.GetFloat("Debugger.Icon.X", s_DefaultIconRect.x);
+                m_LastIconY = m_SettingComponent.GetFloat("Debugger.Icon.Y", s_DefaultIconRect.y);
+                m_LastWindowX = m_SettingComponent.GetFloat("Debugger.Window.X", s_DefaultWindowRect.x);
+                m_LastWindowY = m_SettingComponent.GetFloat("Debugger.Window.Y", s_DefaultWindowRect.y);
+                m_LastWindowWidth = m_SettingComponent.GetFloat("Debugger.Window.Width", s_DefaultWindowRect.width);
+                m_LastWindowHeight = m_SettingComponent.GetFloat("Debugger.Window.Height", s_DefaultWindowRect.height);
+                m_DebuggerComponent.WindowScale = m_LastWindowScale = m_SettingComponent.GetFloat("Debugger.Window.Scale", s_DefaultWindowScale);
+                m_DebuggerComponent.IconRect = new Rect(m_LastIconX, m_LastIconY, s_DefaultIconRect.width, s_DefaultIconRect.height);
                 m_DebuggerComponent.WindowRect = new Rect(m_LastWindowX, m_LastWindowY, m_LastWindowWidth, m_LastWindowHeight);
             }
 

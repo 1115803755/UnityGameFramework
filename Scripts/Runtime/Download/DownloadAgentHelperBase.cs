@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 范围不适用错误码。
         /// </summary>
-        protected const int RangeNotSatisfiableErrorCode = 416;
+        protected const int RANGE_NOT_SATISFIABLE_ERROR_CODE = 416;
 
         /// <summary>
         /// 下载代理辅助器更新数据流事件。

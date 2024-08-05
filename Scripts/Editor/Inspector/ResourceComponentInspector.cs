@@ -19,7 +19,7 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(ResourceComponent))]
     internal sealed class ResourceComponentInspector : GameFrameworkInspector
     {
-        private static readonly string[] ResourceModeNames = new string[] { "Package", "Updatable", "Updatable While Playing" };
+        private static readonly string[] s_ResourceModeNames = new string[] { "Package", "Updatable", "Updatable While Playing" };
 
         private SerializedProperty m_ResourceMode = null;
         private SerializedProperty m_ReadWritePathType = null;
@@ -68,7 +68,7 @@ namespace UnityGameFramework.Editor
                 }
                 else
                 {
-                    int selectedIndex = EditorGUILayout.Popup("Resource Mode", m_ResourceModeIndex, ResourceModeNames);
+                    int selectedIndex = EditorGUILayout.Popup("Resource Mode", m_ResourceModeIndex, s_ResourceModeNames);
                     if (selectedIndex != m_ResourceModeIndex)
                     {
                         m_ResourceModeIndex = selectedIndex;

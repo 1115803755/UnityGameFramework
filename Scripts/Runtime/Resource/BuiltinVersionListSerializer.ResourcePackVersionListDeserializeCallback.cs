@@ -25,7 +25,7 @@ namespace UnityGameFramework.Runtime
         {
             using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8))
             {
-                byte[] encryptBytes = binaryReader.ReadBytes(CachedHashBytesLength);
+                byte[] encryptBytes = binaryReader.ReadBytes(CACHED_HASH_BYTES_LENGTH);
                 int dataOffset = binaryReader.ReadInt32();
                 long dataLength = binaryReader.ReadInt64();
                 int dataHashCode = binaryReader.ReadInt32();
@@ -35,7 +35,7 @@ namespace UnityGameFramework.Runtime
                 {
                     string name = binaryReader.ReadEncryptedString(encryptBytes);
                     string variant = binaryReader.ReadEncryptedString(encryptBytes);
-                    string extension = binaryReader.ReadEncryptedString(encryptBytes) ?? DefaultExtension;
+                    string extension = binaryReader.ReadEncryptedString(encryptBytes) ?? DEFAULT_EXTENSION;
                     byte loadType = binaryReader.ReadByte();
                     long offset = binaryReader.Read7BitEncodedInt64();
                     int length = binaryReader.Read7BitEncodedInt32();

@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 播放声音成功事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(PlaySoundSuccessEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(PlaySoundSuccessEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化播放声音成功事件的新实例。
@@ -41,7 +41,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

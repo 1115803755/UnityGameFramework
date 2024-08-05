@@ -32,7 +32,7 @@ namespace UnityGameFramework.Runtime
 
             using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8))
             {
-                binaryReader.BaseStream.Position += CachedHashBytesLength;
+                binaryReader.BaseStream.Position += CACHED_HASH_BYTES_LENGTH;
                 byte stringLength = binaryReader.ReadByte();
                 binaryReader.BaseStream.Position += stringLength;
                 value = binaryReader.ReadInt32();
@@ -58,7 +58,7 @@ namespace UnityGameFramework.Runtime
 
             using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8))
             {
-                binaryReader.BaseStream.Position += CachedHashBytesLength;
+                binaryReader.BaseStream.Position += CACHED_HASH_BYTES_LENGTH;
                 byte stringLength = binaryReader.ReadByte();
                 binaryReader.BaseStream.Position += stringLength;
                 value = binaryReader.Read7BitEncodedInt32();

@@ -20,7 +20,7 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Base")]
     public sealed class BaseComponent : GameFrameworkComponent
     {
-        private const int DefaultDpi = 96;  // default windows dpi
+        private const int DEFAULT_DPI = 96;  // default windows dpi
 
         private float m_GameSpeedBeforePause = 1f;
 
@@ -225,7 +225,7 @@ namespace UnityGameFramework.Runtime
             Utility.Converter.ScreenDpi = Screen.dpi;
             if (Utility.Converter.ScreenDpi <= 0)
             {
-                Utility.Converter.ScreenDpi = DefaultDpi;
+                Utility.Converter.ScreenDpi = DEFAULT_DPI;
             }
 
             m_EditorResourceMode &= Application.isEditor;

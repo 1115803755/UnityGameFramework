@@ -22,8 +22,8 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public partial class UnityWebRequestDownloadAgentHelper : DownloadAgentHelperBase, IDisposable
     {
-        private const int CachedBytesLength = 0x1000;
-        private readonly byte[] m_CachedBytes = new byte[CachedBytesLength];
+        private const int CACHED_BYTES_LENGTH = 0x1000;
+        private readonly byte[] m_CachedBytes = new byte[CACHED_BYTES_LENGTH];
 
         private UnityWebRequest m_UnityWebRequest = null;
         private bool m_Disposed = false;
@@ -176,7 +176,7 @@ namespace UnityGameFramework.Runtime
                 m_UnityWebRequest = null;
             }
 
-            Array.Clear(m_CachedBytes, 0, CachedBytesLength);
+            Array.Clear(m_CachedBytes, 0, CACHED_BYTES_LENGTH);
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace UnityGameFramework.Runtime
 #endif
             if (isError)
             {
-                DownloadAgentHelperErrorEventArgs downloadAgentHelperErrorEventArgs = DownloadAgentHelperErrorEventArgs.Create(m_UnityWebRequest.responseCode == RangeNotSatisfiableErrorCode, m_UnityWebRequest.error);
+                DownloadAgentHelperErrorEventArgs downloadAgentHelperErrorEventArgs = DownloadAgentHelperErrorEventArgs.Create(m_UnityWebRequest.responseCode == RANGE_NOT_SATISFIABLE_ERROR_CODE, m_UnityWebRequest.error);
                 m_DownloadAgentHelperErrorEventHandler(this, downloadAgentHelperErrorEventArgs);
                 ReferencePool.Release(downloadAgentHelperErrorEventArgs);
             }

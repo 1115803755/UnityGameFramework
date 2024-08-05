@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 加载场景失败事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(LoadSceneFailureEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(LoadSceneFailureEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化加载场景失败事件的新实例。
@@ -37,7 +37,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 激活场景被改变事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(ActiveSceneChangedEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(ActiveSceneChangedEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化激活场景被改变事件的新实例。
@@ -37,7 +37,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

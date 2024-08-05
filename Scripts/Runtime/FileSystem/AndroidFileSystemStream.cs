@@ -19,8 +19,8 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public /*sealed*/ class AndroidFileSystemStream : FileSystemStream, IDisposable
     {
-        private static readonly string SplitFlag = "!/assets/";
-        private static readonly int SplitFlagLength = SplitFlag.Length;
+        private static readonly string s_SplitFlag = "!/assets/";
+        private static readonly int s_SplitFlagLength = s_SplitFlag.Length;
         private static readonly AndroidJavaObject s_AssetManager = null;
         private static readonly IntPtr s_InternalReadMethodId = IntPtr.Zero;
         private static readonly jvalue[] s_InternalReadArgs = null;
@@ -82,13 +82,13 @@ namespace UnityGameFramework.Runtime
                 throw new GameFrameworkException("Create new is not supported in AndroidFileSystemStream.");
             }
 
-            int position = fullPath.LastIndexOf(SplitFlag, StringComparison.Ordinal);
+            int position = fullPath.LastIndexOf(s_SplitFlag, StringComparison.Ordinal);
             if (position < 0)
             {
                 throw new GameFrameworkException("Can not find split flag in full path.");
             }
 
-            string fileName = fullPath.Substring(position + SplitFlagLength);
+            string fileName = fullPath.Substring(position + s_SplitFlagLength);
             m_FileStream = InternalOpen(fileName);
             if (m_FileStream == null)
             {

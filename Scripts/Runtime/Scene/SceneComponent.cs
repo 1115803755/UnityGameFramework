@@ -22,7 +22,7 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Scene")]
     public sealed class SceneComponent : GameFrameworkComponent
     {
-        private const int DefaultPriority = 0;
+        private const int DEFAULT_PRIORITY = 0;
 
         private ISceneManager m_SceneManager = null;
         private EventComponent m_EventComponent = null;
@@ -77,7 +77,7 @@ namespace UnityGameFramework.Runtime
             m_SceneManager.UnloadSceneSuccess += OnUnloadSceneSuccess;
             m_SceneManager.UnloadSceneFailure += OnUnloadSceneFailure;
 
-            m_GameFrameworkScene = SceneManager.GetSceneAt(GameEntry.GameFrameworkSceneId);
+            m_GameFrameworkScene = SceneManager.GetSceneAt(GameEntry.GAME_FRAMEWORK_SCENE_ID);
             if (!m_GameFrameworkScene.IsValid())
             {
                 Log.Fatal("Game Framework scene is invalid.");
@@ -253,7 +253,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="sceneAssetName">场景资源名称。</param>
         public void LoadScene(string sceneAssetName)
         {
-            LoadScene(sceneAssetName, DefaultPriority, null);
+            LoadScene(sceneAssetName, DEFAULT_PRIORITY, null);
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="userData">用户自定义数据。</param>
         public void LoadScene(string sceneAssetName, object userData)
         {
-            LoadScene(sceneAssetName, DefaultPriority, userData);
+            LoadScene(sceneAssetName, DEFAULT_PRIORITY, userData);
         }
 
         /// <summary>

@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public class DefaultSettingHelper : SettingHelperBase
     {
-        private const string SettingFileName = "GameFrameworkSetting.dat";
+        private const string SETTING_FILE_NAME = "GameFrameworkSetting.dat";
 
         private string m_FilePath = null;
         private DefaultSetting m_Settings = null;
@@ -365,7 +365,7 @@ namespace UnityGameFramework.Runtime
 
         private void Awake()
         {
-            m_FilePath = Utility.Path.GetRegularPath(Path.Combine(Application.persistentDataPath, SettingFileName));
+            m_FilePath = Utility.Path.GetRegularPath(Path.Combine(Application.persistentDataPath, SETTING_FILE_NAME));
             m_Settings = new DefaultSetting();
             m_Serializer = new DefaultSettingSerializer();
             m_Serializer.RegisterSerializeCallback(0, SerializeDefaultSettingCallback);

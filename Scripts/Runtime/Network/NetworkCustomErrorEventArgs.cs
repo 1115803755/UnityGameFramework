@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 用户自定义网络错误事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(NetworkCustomErrorEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(NetworkCustomErrorEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化用户自定义网络错误事件的新实例。
@@ -37,7 +37,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

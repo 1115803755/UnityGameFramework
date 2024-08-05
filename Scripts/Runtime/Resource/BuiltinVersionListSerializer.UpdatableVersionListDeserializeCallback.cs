@@ -28,7 +28,7 @@ namespace UnityGameFramework.Runtime
         {
             using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8))
             {
-                byte[] encryptBytes = binaryReader.ReadBytes(CachedHashBytesLength);
+                byte[] encryptBytes = binaryReader.ReadBytes(CACHED_HASH_BYTES_LENGTH);
                 string applicableGameVersion = binaryReader.ReadEncryptedString(encryptBytes);
                 int internalResourceVersion = binaryReader.ReadInt32();
                 int assetCount = binaryReader.ReadInt32();
@@ -68,7 +68,7 @@ namespace UnityGameFramework.Runtime
                 }
 
                 assetNameToDependencyAssetNames.Sort(AssetNameToDependencyAssetNamesComparer);
-                Array.Clear(s_CachedHashBytes, 0, CachedHashBytesLength);
+                Array.Clear(s_CachedHashBytes, 0, CACHED_HASH_BYTES_LENGTH);
                 int index = 0;
                 foreach (KeyValuePair<string, string[]> i in assetNameToDependencyAssetNames)
                 {
@@ -125,7 +125,7 @@ namespace UnityGameFramework.Runtime
         {
             using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8))
             {
-                byte[] encryptBytes = binaryReader.ReadBytes(CachedHashBytesLength);
+                byte[] encryptBytes = binaryReader.ReadBytes(CACHED_HASH_BYTES_LENGTH);
                 string applicableGameVersion = binaryReader.ReadEncryptedString(encryptBytes);
                 int internalResourceVersion = binaryReader.Read7BitEncodedInt32();
                 int assetCount = binaryReader.Read7BitEncodedInt32();
@@ -149,7 +149,7 @@ namespace UnityGameFramework.Runtime
                 {
                     string name = binaryReader.ReadEncryptedString(encryptBytes);
                     string variant = binaryReader.ReadEncryptedString(encryptBytes);
-                    string extension = binaryReader.ReadEncryptedString(encryptBytes) ?? DefaultExtension;
+                    string extension = binaryReader.ReadEncryptedString(encryptBytes) ?? DEFAULT_EXTENSION;
                     byte loadType = binaryReader.ReadByte();
                     int length = binaryReader.Read7BitEncodedInt32();
                     int hashCode = binaryReader.ReadInt32();
@@ -193,7 +193,7 @@ namespace UnityGameFramework.Runtime
         {
             using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8))
             {
-                byte[] encryptBytes = binaryReader.ReadBytes(CachedHashBytesLength);
+                byte[] encryptBytes = binaryReader.ReadBytes(CACHED_HASH_BYTES_LENGTH);
                 string applicableGameVersion = binaryReader.ReadEncryptedString(encryptBytes);
                 int internalResourceVersion = binaryReader.Read7BitEncodedInt32();
                 int assetCount = binaryReader.Read7BitEncodedInt32();
@@ -217,7 +217,7 @@ namespace UnityGameFramework.Runtime
                 {
                     string name = binaryReader.ReadEncryptedString(encryptBytes);
                     string variant = binaryReader.ReadEncryptedString(encryptBytes);
-                    string extension = binaryReader.ReadEncryptedString(encryptBytes) ?? DefaultExtension;
+                    string extension = binaryReader.ReadEncryptedString(encryptBytes) ?? DEFAULT_EXTENSION;
                     byte loadType = binaryReader.ReadByte();
                     int length = binaryReader.Read7BitEncodedInt32();
                     int hashCode = binaryReader.ReadInt32();

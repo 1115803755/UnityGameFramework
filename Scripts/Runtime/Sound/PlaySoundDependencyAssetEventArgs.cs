@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 播放声音时加载依赖资源事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(PlaySoundDependencyAssetEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(PlaySoundDependencyAssetEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化播放声音时加载依赖资源事件的新实例。
@@ -44,7 +44,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

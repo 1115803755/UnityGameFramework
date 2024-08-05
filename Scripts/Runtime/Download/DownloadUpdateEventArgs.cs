@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 下载更新事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(DownloadUpdateEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(DownloadUpdateEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化下载更新事件的新实例。
@@ -39,7 +39,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

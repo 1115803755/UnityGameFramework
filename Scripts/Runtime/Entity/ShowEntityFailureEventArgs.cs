@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 显示实体失败事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(ShowEntityFailureEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(ShowEntityFailureEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化显示实体失败事件的新实例。
@@ -41,7 +41,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

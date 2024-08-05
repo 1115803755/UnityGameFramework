@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 加载场景成功事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(UnloadSceneSuccessEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(UnloadSceneSuccessEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化卸载场景成功事件的新实例。
@@ -36,7 +36,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

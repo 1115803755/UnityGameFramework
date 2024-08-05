@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 关闭界面完成事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(CloseUIFormCompleteEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(CloseUIFormCompleteEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化关闭界面完成事件的新实例。
@@ -39,7 +39,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 

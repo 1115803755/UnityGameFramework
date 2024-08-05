@@ -138,7 +138,7 @@ namespace UnityGameFramework.Editor
         /// </summary>
         struct OpenPanelOption
         {
-            public static readonly OpenPanelOption defalut = new OpenPanelOption { index = -1, type = emOpenPanelType.None };
+            public static readonly OpenPanelOption s_Defalut = new OpenPanelOption { index = -1, type = emOpenPanelType.None };
             public int index;
             public emOpenPanelType type;
             public bool Valid()
@@ -169,7 +169,7 @@ namespace UnityGameFramework.Editor
             m_SearchScenePathsList.drawHeaderCallback = DrawSearchScenePathsHeader;
             m_SearchScenePathsList.drawElementCallback = DrawSearchScenePathsElement;
 
-            m_openPanelOption = OpenPanelOption.defalut;
+            m_openPanelOption = OpenPanelOption.s_Defalut;
         }
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace UnityGameFramework.Editor
                         }
                         break;
                 }
-                m_openPanelOption = OpenPanelOption.defalut;
+                m_openPanelOption = OpenPanelOption.s_Defalut;
             }
         }
     }

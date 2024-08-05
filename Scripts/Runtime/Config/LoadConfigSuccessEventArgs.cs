@@ -18,7 +18,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 加载全局配置成功事件编号。
         /// </summary>
-        public static readonly int EventId = typeof(LoadConfigSuccessEventArgs).GetHashCode();
+        public static readonly int s_EventId = typeof(LoadConfigSuccessEventArgs).GetHashCode();
 
         /// <summary>
         /// 初始化加载全局配置成功事件编号的新实例。
@@ -37,7 +37,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return EventId;
+                return s_EventId;
             }
         }
 
