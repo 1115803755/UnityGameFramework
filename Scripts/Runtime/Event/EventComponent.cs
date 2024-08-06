@@ -19,6 +19,9 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Event")]
     public sealed class EventComponent : GameFrameworkComponent
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private IEventManager m_EventManager = null;
 
         /// <summary>
@@ -58,6 +61,9 @@ namespace UnityGameFramework.Runtime
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void Start()
         {
         }

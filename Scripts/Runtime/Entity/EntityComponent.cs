@@ -7,10 +7,12 @@
 
 using GameFramework;
 using GameFramework.Entity;
+using GameFramework.Event;
 using GameFramework.ObjectPool;
 using GameFramework.Resource;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace UnityGameFramework.Runtime
@@ -22,34 +24,79 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Entity")]
     public sealed partial class EntityComponent : GameFrameworkComponent
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private const int DEFAULT_PRIORITY = 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
         private IEntityManager m_EntityManager = null;
+
+        /// <summary>
+        /// 
+        /// </summary>
         private EventComponent m_EventComponent = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly List<IEntity> m_InternalEntityResults = new List<IEntity>();
 
+        #region AwaitExtension
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly Dictionary<int, TaskCompletionSource<Entity>> s_EntityTcs =
+            new Dictionary<int, TaskCompletionSource<Entity>>();
+        #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private bool m_EnableShowEntityUpdateEvent = false;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private bool m_EnableShowEntityDependencyAssetEvent = false;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private Transform m_InstanceRoot = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private string m_EntityHelperTypeName = "UnityGameFramework.Runtime.DefaultEntityHelper";
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private EntityHelperBase m_CustomEntityHelper = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private string m_EntityGroupHelperTypeName = "UnityGameFramework.Runtime.DefaultEntityGroupHelper";
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private EntityGroupHelperBase m_CustomEntityGroupHelper = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private EntityGroup[] m_EntityGroups = null;
 
@@ -105,6 +152,9 @@ namespace UnityGameFramework.Runtime
             m_EntityManager.HideEntityComplete += OnHideEntityComplete;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void Start()
         {
             BaseComponent baseComponent = GameEntry.GetComponent<BaseComponent>();
@@ -120,6 +170,10 @@ namespace UnityGameFramework.Runtime
                 Log.Fatal("Event component is invalid.");
                 return;
             }
+
+            // hxd 2024/08/06 AwaitExtension
+            m_EventComponent.Subscribe(ShowEntitySuccessEventArgs.s_EventId, OnShowEntitySuccess);
+            m_EventComponent.Subscribe(ShowEntityFailureEventArgs.s_EventId, OnShowEntityFailure);
 
             if (baseComponent.EditorResourceMode)
             {
@@ -1117,30 +1171,104 @@ namespace UnityGameFramework.Runtime
             entityGroup.SetEntityInstancePriority(entity.gameObject, priority);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnShowEntitySuccess(object sender, GameFramework.Entity.ShowEntitySuccessEventArgs e)
         {
             m_EventComponent.Fire(this, ShowEntitySuccessEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnShowEntityFailure(object sender, GameFramework.Entity.ShowEntityFailureEventArgs e)
         {
             Log.Warning("Show entity failure, entity id '{0}', asset name '{1}', entity group name '{2}', error message '{3}'.", e.EntityId, e.EntityAssetName, e.EntityGroupName, e.ErrorMessage);
             m_EventComponent.Fire(this, ShowEntityFailureEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnShowEntityUpdate(object sender, GameFramework.Entity.ShowEntityUpdateEventArgs e)
         {
             m_EventComponent.Fire(this, ShowEntityUpdateEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnShowEntityDependencyAsset(object sender, GameFramework.Entity.ShowEntityDependencyAssetEventArgs e)
         {
             m_EventComponent.Fire(this, ShowEntityDependencyAssetEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnHideEntityComplete(object sender, GameFramework.Entity.HideEntityCompleteEventArgs e)
         {
             m_EventComponent.Fire(this, HideEntityCompleteEventArgs.Create(e));
         }
+
+        #region AwaitExtension
+
+        /// <summary>
+        /// 显示实体（可等待）
+        /// </summary>
+        public Task<Entity> ShowEntityAsync(int entityId, Type entityLogicType, string entityAssetName, 
+            string entityGroupName, int priority, object userData)
+        {
+            var tcs = new TaskCompletionSource<Entity>();
+            s_EntityTcs.Add(entityId, tcs);
+            ShowEntity(entityId, entityLogicType, entityAssetName, entityGroupName, priority, userData);
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnShowEntitySuccess(object sender, GameEventArgs e)
+        {
+            ShowEntitySuccessEventArgs ne = (ShowEntitySuccessEventArgs)e;
+            s_EntityTcs.TryGetValue(ne.Entity.Id, out var tcs);
+            if (tcs != null)
+            {
+                tcs.SetResult(ne.Entity);
+                s_EntityTcs.Remove(ne.Entity.Id);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnShowEntityFailure(object sender, GameEventArgs e)
+        {
+            ShowEntityFailureEventArgs ne = (ShowEntityFailureEventArgs)e;
+            s_EntityTcs.TryGetValue(ne.EntityId, out var tcs);
+            if (tcs != null)
+            {
+                Debug.LogError(ne.ErrorMessage);
+                tcs.SetException(new GameFrameworkException(ne.ErrorMessage));
+                s_EntityTcs.Remove(ne.EntityId);
+            }
+        }
+
+        #endregion
     }
 }

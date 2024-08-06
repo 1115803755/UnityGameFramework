@@ -110,3 +110,7 @@ Game Framework provides the following 19 builtin modules, and more will be devel
 2. 新增工程配置编辑，用于编辑器指定工具配置文件的根目录 
 
 3. 新增BuildSetting编辑面板  Game Framework/Scenes in Build Settings/Open Editor
+
+4. 命名规范修改（静态变量s_大驼峰 常量全大写+下划线分割 属性均大驼峰）
+
+5. Await扩展支持（UIComponent、SceneComponent、ResourceComponent、EntityComponent、DownLoadComponent、WebRequestComponent相关可等待方法）

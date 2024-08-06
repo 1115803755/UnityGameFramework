@@ -4,12 +4,13 @@
 // Homepage: https://gameframework.cn/
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
-
 using GameFramework;
+using GameFramework.Event;
 using GameFramework.ObjectPool;
 using GameFramework.Resource;
 using GameFramework.UI;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace UnityGameFramework.Runtime
@@ -21,55 +22,121 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/UI")]
     public sealed partial class UIComponent : GameFrameworkComponent
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private const int DEFAULT_PRIORITY = 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
         private IUIManager m_UIManager = null;
+        
+        /// <summary>
+        /// 
+        /// </summary>
         private EventComponent m_EventComponent = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly List<IUIForm> m_InternalUIFormResults = new List<IUIForm>();
 
+        #region AwaitExtension
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly Dictionary<int, TaskCompletionSource<UIForm>> s_UIFormTcs =
+            new Dictionary<int, TaskCompletionSource<UIForm>>();
+        #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private bool m_EnableOpenUIFormSuccessEvent = true;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private bool m_EnableOpenUIFormFailureEvent = true;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private bool m_EnableOpenUIFormUpdateEvent = false;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private bool m_EnableOpenUIFormDependencyAssetEvent = false;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private bool m_EnableCloseUIFormCompleteEvent = true;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private float m_InstanceAutoReleaseInterval = 60f;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private int m_InstanceCapacity = 16;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private float m_InstanceExpireTime = 60f;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private int m_InstancePriority = 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private Transform m_InstanceRoot = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private string m_UIFormHelperTypeName = "UnityGameFramework.Runtime.DefaultUIFormHelper";
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private UIFormHelperBase m_CustomUIFormHelper = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private string m_UIGroupHelperTypeName = "UnityGameFramework.Runtime.DefaultUIGroupHelper";
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private UIGroupHelperBase m_CustomUIGroupHelper = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private UIGroup[] m_UIGroups = null;
 
@@ -181,6 +248,9 @@ namespace UnityGameFramework.Runtime
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void Start()
         {
             BaseComponent baseComponent = GameEntry.GetComponent<BaseComponent>();
@@ -196,6 +266,10 @@ namespace UnityGameFramework.Runtime
                 Log.Fatal("Event component is invalid.");
                 return;
             }
+
+            // hxd 2024/08/06 异步拓展事件注册
+            m_EventComponent.Subscribe(OpenUIFormSuccessEventArgs.s_EventId, OnOpenUIFormSuccess);
+            m_EventComponent.Subscribe(OpenUIFormFailureEventArgs.s_EventId, OnOpenUIFormFailure);
 
             if (baseComponent.EditorResourceMode)
             {
@@ -698,11 +772,21 @@ namespace UnityGameFramework.Runtime
             m_UIManager.SetUIFormInstancePriority(uiForm.gameObject, priority);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnOpenUIFormSuccess(object sender, GameFramework.UI.OpenUIFormSuccessEventArgs e)
         {
             m_EventComponent.Fire(this, OpenUIFormSuccessEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnOpenUIFormFailure(object sender, GameFramework.UI.OpenUIFormFailureEventArgs e)
         {
             Log.Warning("Open UI form failure, asset name '{0}', UI group name '{1}', pause covered UI form '{2}', error message '{3}'.", e.UIFormAssetName, e.UIGroupName, e.PauseCoveredUIForm, e.ErrorMessage);
@@ -712,19 +796,88 @@ namespace UnityGameFramework.Runtime
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnOpenUIFormUpdate(object sender, GameFramework.UI.OpenUIFormUpdateEventArgs e)
         {
             m_EventComponent.Fire(this, OpenUIFormUpdateEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnOpenUIFormDependencyAsset(object sender, GameFramework.UI.OpenUIFormDependencyAssetEventArgs e)
         {
             m_EventComponent.Fire(this, OpenUIFormDependencyAssetEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnCloseUIFormComplete(object sender, GameFramework.UI.CloseUIFormCompleteEventArgs e)
         {
             m_EventComponent.Fire(this, CloseUIFormCompleteEventArgs.Create(e));
         }
+
+        #region AwaitExtension
+
+        //```csharp
+        //    await GameEntry.UI.OpenUIFormAsync(UIFormId.Test);
+        //```
+
+        /// <summary>
+        /// 打开界面（可等待）
+        /// </summary>
+        public Task<UIForm> OpenUIFormAsync(string uiFormAssetName, string uiGroupName, int priority, bool pauseCoveredUIForm, object userData)
+        {
+            int serialId = OpenUIForm(uiFormAssetName, uiGroupName, priority, pauseCoveredUIForm, userData);
+            var tcs = new TaskCompletionSource<UIForm>();
+            s_UIFormTcs.Add(serialId, tcs);
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnOpenUIFormSuccess(object sender, GameEventArgs e)
+        {
+            // TODO hxd 2024/08/06 不直接写在上面的OnOpenUIFormSuccess，一个是事件参数一定要经过转化
+            // (OpenUIFormSuccessEventArgs与GameFramework.UI.OpenUIFormSuccessEventArgs不一样），一个是想保留扩展方式而不是直接改源码
+            OpenUIFormSuccessEventArgs ne = (OpenUIFormSuccessEventArgs)e; 
+            s_UIFormTcs.TryGetValue(ne.UIForm.SerialId, out TaskCompletionSource<UIForm> tcs);
+            if (tcs != null)
+            {
+                tcs.SetResult(ne.UIForm);
+                s_UIFormTcs.Remove(ne.UIForm.SerialId);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnOpenUIFormFailure(object sender, GameEventArgs e)
+        {
+            // TODO hxd 2024/08/06 不直接写在上面的OnOpenUIFormFailure，理由同上面成功类似
+            OpenUIFormFailureEventArgs ne = (OpenUIFormFailureEventArgs)e;
+            s_UIFormTcs.TryGetValue(ne.SerialId, out TaskCompletionSource<UIForm> tcs);
+            if (tcs != null)
+            {
+                Debug.LogError(ne.ErrorMessage);
+                tcs.SetException(new GameFrameworkException(ne.ErrorMessage));
+                s_UIFormTcs.Remove(ne.SerialId);
+            }
+        }
+        #endregion
     }
 }

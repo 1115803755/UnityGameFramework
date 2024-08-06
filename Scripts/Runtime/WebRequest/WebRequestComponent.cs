@@ -4,11 +4,12 @@
 // Homepage: https://gameframework.cn/
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
-
 using GameFramework;
 using GameFramework.WebRequest;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using GameFramework.Event;
 
 namespace UnityGameFramework.Runtime
 {
@@ -19,23 +20,60 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Web Request")]
     public sealed class WebRequestComponent : GameFrameworkComponent
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private const int DEFAULT_PRIORITY = 0;
 
+        #region hxd 2024/08/06 AwaitExtension
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly HashSet<int> s_WebSerialIDs = new HashSet<int>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly List<WebResult> s_DelayReleaseWebResult = new List<WebResult>();
+        #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
         private IWebRequestManager m_WebRequestManager = null;
+
+        /// <summary>
+        /// 
+        /// </summary>
         private EventComponent m_EventComponent = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private Transform m_InstanceRoot = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private string m_WebRequestAgentHelperTypeName = "UnityGameFramework.Runtime.UnityWebRequestAgentHelper";
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private WebRequestAgentHelperBase m_CustomWebRequestAgentHelper = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private int m_WebRequestAgentHelperCount = 1;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private float m_Timeout = 30f;
 
@@ -118,6 +156,9 @@ namespace UnityGameFramework.Runtime
             m_WebRequestManager.WebRequestFailure += OnWebRequestFailure;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void Start()
         {
             m_EventComponent = GameEntry.GetComponent<EventComponent>();
@@ -126,6 +167,10 @@ namespace UnityGameFramework.Runtime
                 Log.Fatal("Event component is invalid.");
                 return;
             }
+
+            // hxd 2024/08/06 AwaitExtension
+            m_EventComponent.Subscribe(WebRequestSuccessEventArgs.s_EventId, OnWebRequestSuccess);
+            m_EventComponent.Subscribe(WebRequestFailureEventArgs.s_EventId, OnWebRequestFailure);
 
             if (m_InstanceRoot == null)
             {
@@ -545,20 +590,133 @@ namespace UnityGameFramework.Runtime
             return m_WebRequestManager.AddWebRequest(webRequestUri, postData, tag, priority, WWWFormInfo.Create(wwwForm, userData));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnWebRequestStart(object sender, GameFramework.WebRequest.WebRequestStartEventArgs e)
         {
             m_EventComponent.Fire(this, WebRequestStartEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnWebRequestSuccess(object sender, GameFramework.WebRequest.WebRequestSuccessEventArgs e)
         {
             m_EventComponent.Fire(this, WebRequestSuccessEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnWebRequestFailure(object sender, GameFramework.WebRequest.WebRequestFailureEventArgs e)
         {
             Log.Warning("Web request failure, web request serial id '{0}', web request uri '{1}', error message '{2}'.", e.SerialId, e.WebRequestUri, e.ErrorMessage);
             m_EventComponent.Fire(this, WebRequestFailureEventArgs.Create(e));
         }
+
+        #region AwaitExtension
+
+        //```csharp
+        //   WebResult result = await GameEntry.WebRequest.AddWebRequestAsync("url");
+        //   Debug.Log(result.IsError);
+        //   if (!result.IsError)
+        //   {
+        //       Debug.Log(result.Bytes);
+        //   }
+        // ```
+
+        /// <summary>
+        /// 增加Web请求任务（可等待）
+        /// </summary>
+        public Task<WebResult> AddWebRequestAsync(string webRequestUri, WWWForm wwwForm = null, object userdata = null)
+        {
+            var tsc = new TaskCompletionSource<WebResult>();
+            int serialId = AddWebRequest(webRequestUri, wwwForm, AwaitDataWrap<WebResult>.Create(userdata, tsc));
+            s_WebSerialIDs.Add(serialId);
+            return tsc.Task;
+        }
+
+        /// <summary>
+        /// 增加Web请求任务（可等待）
+        /// </summary>
+        public Task<WebResult> AddWebRequestAsync(string webRequestUri, byte[] postData, object userdata = null)
+        {
+            var tsc = new TaskCompletionSource<WebResult>();
+            int serialId = AddWebRequest(webRequestUri, postData, AwaitDataWrap<WebResult>.Create(userdata, tsc));
+            s_WebSerialIDs.Add(serialId);
+            return tsc.Task;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnWebRequestSuccess(object sender, GameEventArgs e)
+        {
+            WebRequestSuccessEventArgs ne = (WebRequestSuccessEventArgs)e;
+            if (s_WebSerialIDs.Contains(ne.SerialId))
+            {
+                if (ne.UserData is AwaitDataWrap<WebResult> webRequestUserdata)
+                {
+                    WebResult result = WebResult.Create(ne.GetWebResponseBytes(), false, string.Empty,
+                        webRequestUserdata.UserData);
+                    s_DelayReleaseWebResult.Add(result);
+                    webRequestUserdata.Source.TrySetResult(result);
+                    ReferencePool.Release(webRequestUserdata);
+                }
+
+                s_WebSerialIDs.Remove(ne.SerialId);
+                if (s_WebSerialIDs.Count == 0)
+                {
+                    for (int i = 0; i < s_DelayReleaseWebResult.Count; i++)
+                    {
+                        ReferencePool.Release(s_DelayReleaseWebResult[i]);
+                    }
+
+                    s_DelayReleaseWebResult.Clear();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnWebRequestFailure(object sender, GameEventArgs e)
+        {
+            WebRequestFailureEventArgs ne = (WebRequestFailureEventArgs)e;
+            if (s_WebSerialIDs.Contains(ne.SerialId))
+            {
+                if (ne.UserData is AwaitDataWrap<WebResult> webRequestUserdata)
+                {
+                    WebResult result = WebResult.Create(null, true, ne.ErrorMessage, webRequestUserdata.UserData);
+                    webRequestUserdata.Source.TrySetResult(result);
+                    s_DelayReleaseWebResult.Add(result);
+                    ReferencePool.Release(webRequestUserdata);
+                }
+
+                s_WebSerialIDs.Remove(ne.SerialId);
+                if (s_WebSerialIDs.Count == 0)
+                {
+                    for (int i = 0; i < s_DelayReleaseWebResult.Count; i++)
+                    {
+                        ReferencePool.Release(s_DelayReleaseWebResult[i]);
+                    }
+
+                    s_DelayReleaseWebResult.Clear();
+                }
+            }
+        }
+
+        #endregion
     }
 }

@@ -12,6 +12,7 @@ using GameFramework.ObjectPool;
 using GameFramework.Resource;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace UnityGameFramework.Runtime
@@ -23,79 +24,184 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Resource")]
     public sealed class ResourceComponent : GameFrameworkComponent
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private const int DEFAULT_PRIORITY = 0;
+        
+        /// <summary>
+        /// 
+        /// </summary>
         private const int ONE_MEGA_BYTES = 1024 * 1024;
 
+        /// <summary>
+        /// 
+        /// </summary>
         private IResourceManager m_ResourceManager = null;
+        
+        /// <summary>
+        /// 
+        /// </summary>
         private EventComponent m_EventComponent = null;
+        
+        /// <summary>
+        /// 
+        /// </summary>
         private bool m_EditorResourceMode = false;
+        
+        /// <summary>
+        /// 
+        /// </summary>
         private bool m_ForceUnloadUnusedAssets = false;
+        
+        /// <summary>
+        /// 
+        /// </summary>
         private bool m_PreorderUnloadUnusedAssets = false;
+        
+        /// <summary>
+        /// 
+        /// </summary>
         private bool m_PerformGCCollect = false;
+        
+        /// <summary>
+        /// 
+        /// </summary>
         private AsyncOperation m_AsyncOperation = null;
+        
+        /// <summary>
+        /// 
+        /// </summary>
         private float m_LastUnloadUnusedAssetsOperationElapseSeconds = 0f;
+        
+        /// <summary>
+        /// 
+        /// </summary>
         private ResourceHelperBase m_ResourceHelper = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private ResourceMode m_ResourceMode = ResourceMode.Package;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private ReadWritePathType m_ReadWritePathType = ReadWritePathType.Unspecified;
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private float m_MinUnloadUnusedAssetsInterval = 60f;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private float m_MaxUnloadUnusedAssetsInterval = 300f;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private float m_AssetAutoReleaseInterval = 60f;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private int m_AssetCapacity = 64;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private float m_AssetExpireTime = 60f;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private int m_AssetPriority = 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private float m_ResourceAutoReleaseInterval = 60f;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private int m_ResourceCapacity = 16;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private float m_ResourceExpireTime = 60f;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private int m_ResourcePriority = 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private string m_UpdatePrefixUri = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private int m_GenerateReadWriteVersionListLength = ONE_MEGA_BYTES;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private int m_UpdateRetryCount = 3;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private Transform m_InstanceRoot = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private string m_ResourceHelperTypeName = "UnityGameFramework.Runtime.DefaultResourceHelper";
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private ResourceHelperBase m_CustomResourceHelper = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private string m_LoadResourceAgentHelperTypeName = "UnityGameFramework.Runtime.DefaultLoadResourceAgentHelper";
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private LoadResourceAgentHelperBase m_CustomLoadResourceAgentHelper = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         [SerializeField]
         private int m_LoadResourceAgentHelperCount = 3;
 
@@ -588,6 +694,9 @@ namespace UnityGameFramework.Runtime
             base.Awake();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void Start()
         {
             BaseComponent baseComponent = GameEntry.GetComponent<BaseComponent>();
@@ -690,6 +799,9 @@ namespace UnityGameFramework.Runtime
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void Update()
         {
             m_LastUnloadUnusedAssetsOperationElapseSeconds += Time.unscaledDeltaTime;
@@ -1443,59 +1555,175 @@ namespace UnityGameFramework.Runtime
             m_ResourceManager.AddLoadResourceAgentHelper(loadResourceAgentHelper);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnResourceVerifyStart(object sender, GameFramework.Resource.ResourceVerifyStartEventArgs e)
         {
             m_EventComponent.Fire(this, ResourceVerifyStartEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnResourceVerifySuccess(object sender, GameFramework.Resource.ResourceVerifySuccessEventArgs e)
         {
             m_EventComponent.Fire(this, ResourceVerifySuccessEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnResourceVerifyFailure(object sender, GameFramework.Resource.ResourceVerifyFailureEventArgs e)
         {
             m_EventComponent.Fire(this, ResourceVerifyFailureEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnResourceApplyStart(object sender, GameFramework.Resource.ResourceApplyStartEventArgs e)
         {
             m_EventComponent.Fire(this, ResourceApplyStartEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnResourceApplySuccess(object sender, GameFramework.Resource.ResourceApplySuccessEventArgs e)
         {
             m_EventComponent.Fire(this, ResourceApplySuccessEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnResourceApplyFailure(object sender, GameFramework.Resource.ResourceApplyFailureEventArgs e)
         {
             m_EventComponent.Fire(this, ResourceApplyFailureEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnResourceUpdateStart(object sender, GameFramework.Resource.ResourceUpdateStartEventArgs e)
         {
             m_EventComponent.Fire(this, ResourceUpdateStartEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnResourceUpdateChanged(object sender, GameFramework.Resource.ResourceUpdateChangedEventArgs e)
         {
             m_EventComponent.Fire(this, ResourceUpdateChangedEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnResourceUpdateSuccess(object sender, GameFramework.Resource.ResourceUpdateSuccessEventArgs e)
         {
             m_EventComponent.Fire(this, ResourceUpdateSuccessEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnResourceUpdateFailure(object sender, GameFramework.Resource.ResourceUpdateFailureEventArgs e)
         {
             m_EventComponent.Fire(this, ResourceUpdateFailureEventArgs.Create(e));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnResourceUpdateAllComplete(object sender, GameFramework.Resource.ResourceUpdateAllCompleteEventArgs e)
         {
             m_EventComponent.Fire(this, ResourceUpdateAllCompleteEventArgs.Create(e));
         }
+
+        #region AwaitExtension
+        /// <summary>
+        /// 加载资源（可等待）
+        /// </summary>
+        public Task<T> LoadAssetAsync<T>(string assetName)
+            where T : UnityEngine.Object
+        {
+            TaskCompletionSource<T> loadAssetTcs = new TaskCompletionSource<T>();
+            LoadAsset(assetName, typeof(T), new LoadAssetCallbacks(
+                (tempAssetName, asset, duration, userdata) =>
+                {
+                    var source = loadAssetTcs;
+                    loadAssetTcs = null;
+                    T tAsset = asset as T;
+                    if (tAsset != null)
+                    {
+                        source.SetResult(tAsset);
+                    }
+                    else
+                    {
+                        Debug.LogError($"Load asset failure load type is {asset.GetType()} but asset type is {typeof(T)}.");
+                        source.SetException(new GameFrameworkException(
+                            $"Load asset failure load type is {asset.GetType()} but asset type is {typeof(T)}."));
+                    }
+                },
+                (tempAssetName, status, errorMessage, userdata) =>
+                {
+                    Debug.LogError(errorMessage);
+                    loadAssetTcs.SetException(new GameFrameworkException(errorMessage));
+                }
+            ));
+
+            return loadAssetTcs.Task;
+        }
+
+        /// <summary>
+        /// 加载多个资源（可等待）
+        /// </summary>
+        public async Task<T[]> LoadAssetsAsync<T>(string[] assetName) where T : UnityEngine.Object
+        {
+            if (assetName == null)
+            {
+                return null;
+            }
+            T[] assets = new T[assetName.Length];
+            Task<T>[] tasks = new Task<T>[assets.Length];
+            for (int i = 0; i < tasks.Length; i++)
+            {
+                tasks[i] = LoadAssetAsync<T>(assetName[i]);
+            }
+
+            await Task.WhenAll(tasks);
+            for (int i = 0; i < assets.Length; i++)
+            {
+                assets[i] = tasks[i].Result;
+            }
+
+            return assets;
+        }
+        #endregion
     }
 }
