@@ -54,8 +54,9 @@ namespace UnityGameFramework.Editor
                         if (fieldInfo.GetCustomAttribute<ReplenishTypeAttribute>().runtime && !tempRuntimeAssemblyNames.Contains(v))
                         {
                             tempRuntimeAssemblyNames.Add(v);
+                            tempRuntimeOrEditorAssemblyNames.Add(v);
                         }
-                        if (!tempRuntimeOrEditorAssemblyNames.Contains(v))
+                        if (!fieldInfo.GetCustomAttribute<ReplenishTypeAttribute>().runtime && !tempRuntimeOrEditorAssemblyNames.Contains(v))
                         {
                             tempRuntimeOrEditorAssemblyNames.Add(v);
                         }
