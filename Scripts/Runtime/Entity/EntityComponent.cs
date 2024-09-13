@@ -7,12 +7,10 @@
 
 using GameFramework;
 using GameFramework.Entity;
-using GameFramework.Event;
 using GameFramework.ObjectPool;
 using GameFramework.Resource;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace UnityGameFramework.Runtime
@@ -43,14 +41,6 @@ namespace UnityGameFramework.Runtime
         /// 
         /// </summary>
         private readonly List<IEntity> m_InternalEntityResults = new List<IEntity>();
-
-        #region AwaitExtension
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly Dictionary<int, TaskCompletionSource<Entity>> s_EntityTcs =
-            new Dictionary<int, TaskCompletionSource<Entity>>();
-        #endregion
 
         /// <summary>
         /// 
@@ -170,10 +160,6 @@ namespace UnityGameFramework.Runtime
                 Log.Fatal("Event component is invalid.");
                 return;
             }
-
-            // hxd 2024/08/06 AwaitExtension
-            m_EventComponent.Subscribe(ShowEntitySuccessEventArgs.s_EventId, OnShowEntitySuccess);
-            m_EventComponent.Subscribe(ShowEntityFailureEventArgs.s_EventId, OnShowEntityFailure);
 
             if (baseComponent.EditorResourceMode)
             {
@@ -1221,54 +1207,5 @@ namespace UnityGameFramework.Runtime
         {
             m_EventComponent.Fire(this, HideEntityCompleteEventArgs.Create(e));
         }
-
-        #region AwaitExtension
-
-        /// <summary>
-        /// 显示实体（可等待）
-        /// </summary>
-        public Task<Entity> ShowEntityAsync(int entityId, Type entityLogicType, string entityAssetName, 
-            string entityGroupName, int priority, object userData)
-        {
-            var tcs = new TaskCompletionSource<Entity>();
-            s_EntityTcs.Add(entityId, tcs);
-            ShowEntity(entityId, entityLogicType, entityAssetName, entityGroupName, priority, userData);
-            return tcs.Task;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnShowEntitySuccess(object sender, GameEventArgs e)
-        {
-            ShowEntitySuccessEventArgs ne = (ShowEntitySuccessEventArgs)e;
-            s_EntityTcs.TryGetValue(ne.Entity.Id, out var tcs);
-            if (tcs != null)
-            {
-                tcs.SetResult(ne.Entity);
-                s_EntityTcs.Remove(ne.Entity.Id);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnShowEntityFailure(object sender, GameEventArgs e)
-        {
-            ShowEntityFailureEventArgs ne = (ShowEntityFailureEventArgs)e;
-            s_EntityTcs.TryGetValue(ne.EntityId, out var tcs);
-            if (tcs != null)
-            {
-                Debug.LogError(ne.ErrorMessage);
-                tcs.SetException(new GameFrameworkException(ne.ErrorMessage));
-                s_EntityTcs.Remove(ne.EntityId);
-            }
-        }
-
-        #endregion
     }
 }

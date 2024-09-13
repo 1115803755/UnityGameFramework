@@ -7,9 +7,7 @@
 
 using GameFramework;
 using GameFramework.Download;
-using GameFramework.Event;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace UnityGameFramework.Runtime
@@ -30,18 +28,6 @@ namespace UnityGameFramework.Runtime
         /// 
         /// </summary>
         private const int ONE_MEGA_BYTES = 1024 * 1024;
-
-        #region AwaitExtension
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly HashSet<int> s_DownloadSerialIds = new HashSet<int>();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly List<DownLoadResult> s_DelayReleaseDownloadResult = new List<DownLoadResult>();
-        #endregion
 
         /// <summary>
         /// 
@@ -222,10 +208,6 @@ namespace UnityGameFramework.Runtime
                 Log.Fatal("Event component is invalid.");
                 return;
             }
-
-            // hxd 2024/08/06 AwaitExtension
-            m_EventComponent.Subscribe(DownloadSuccessEventArgs.s_EventId, OnDownloadSuccess);
-            m_EventComponent.Subscribe(DownloadFailureEventArgs.s_EventId, OnDownloadFailure);
 
             if (m_InstanceRoot == null)
             {
@@ -478,82 +460,5 @@ namespace UnityGameFramework.Runtime
             Log.Warning("Download failure, download serial id '{0}', download path '{1}', download uri '{2}', error message '{3}'.", e.SerialId, e.DownloadPath, e.DownloadUri, e.ErrorMessage);
             m_EventComponent.Fire(this, DownloadFailureEventArgs.Create(e));
         }
-
-        #region AwaitExtension
-
-        /// <summary>
-        /// 增加下载任务（可等待)
-        /// </summary>
-        public Task<DownLoadResult> AddDownloadAsync(string downloadPath, string downloadUri, object userdata = null)
-        {
-            var tcs = new TaskCompletionSource<DownLoadResult>();
-            int serialId = AddDownload(downloadPath, downloadUri,
-                AwaitDataWrap<DownLoadResult>.Create(userdata, tcs));
-            s_DownloadSerialIds.Add(serialId);
-            return tcs.Task;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnDownloadSuccess(object sender, GameEventArgs e)
-        {
-            DownloadSuccessEventArgs ne = (DownloadSuccessEventArgs)e;
-            if (s_DownloadSerialIds.Contains(ne.SerialId))
-            {
-                if (ne.UserData is AwaitDataWrap<DownLoadResult> awaitDataWrap)
-                {
-                    DownLoadResult result = DownLoadResult.Create(false, string.Empty, awaitDataWrap.UserData);
-                    s_DelayReleaseDownloadResult.Add(result);
-                    awaitDataWrap.Source.TrySetResult(result);
-                    ReferencePool.Release(awaitDataWrap);
-                }
-
-                s_DownloadSerialIds.Remove(ne.SerialId);
-                if (s_DownloadSerialIds.Count == 0)
-                {
-                    for (int i = 0; i < s_DelayReleaseDownloadResult.Count; i++)
-                    {
-                        ReferencePool.Release(s_DelayReleaseDownloadResult[i]);
-                    }
-
-                    s_DelayReleaseDownloadResult.Clear();
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnDownloadFailure(object sender, GameEventArgs e)
-        {
-            DownloadFailureEventArgs ne = (DownloadFailureEventArgs)e;
-            if (s_DownloadSerialIds.Contains(ne.SerialId))
-            {
-                if (ne.UserData is AwaitDataWrap<DownLoadResult> awaitDataWrap)
-                {
-                    DownLoadResult result = DownLoadResult.Create(true, ne.ErrorMessage, awaitDataWrap.UserData);
-                    s_DelayReleaseDownloadResult.Add(result);
-                    awaitDataWrap.Source.TrySetResult(result);
-                    ReferencePool.Release(awaitDataWrap);
-                }
-
-                s_DownloadSerialIds.Remove(ne.SerialId);
-                if (s_DownloadSerialIds.Count == 0)
-                {
-                    for (int i = 0; i < s_DelayReleaseDownloadResult.Count; i++)
-                    {
-                        ReferencePool.Release(s_DelayReleaseDownloadResult[i]);
-                    }
-
-                    s_DelayReleaseDownloadResult.Clear();
-                }
-            }
-        }
-        #endregion
     }
 }

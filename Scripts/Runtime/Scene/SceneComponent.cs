@@ -5,12 +5,10 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 using GameFramework;
-using GameFramework.Event;
 using GameFramework.Resource;
 using GameFramework.Scene;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -43,20 +41,6 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         private readonly SortedDictionary<string, int> m_SceneOrder = 
             new SortedDictionary<string, int>(StringComparer.Ordinal);
-
-        #region AwaitExtension
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly Dictionary<string, TaskCompletionSource<bool>> s_LoadSceneTcs =
-            new Dictionary<string, TaskCompletionSource<bool>>();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly Dictionary<string, TaskCompletionSource<bool>> s_UnLoadSceneTcs =
-            new Dictionary<string, TaskCompletionSource<bool>>();
-        #endregion
 
         /// <summary>
         /// 
@@ -147,12 +131,6 @@ namespace UnityGameFramework.Runtime
                 Log.Fatal("Event component is invalid.");
                 return;
             }
-
-            // hxd 2024/08/06 AwaitExtension
-            m_EventComponent.Subscribe(LoadSceneSuccessEventArgs.s_EventId, OnLoadSceneSuccess);
-            m_EventComponent.Subscribe(LoadSceneFailureEventArgs.s_EventId, OnLoadSceneFailure);
-            m_EventComponent.Subscribe(UnloadSceneSuccessEventArgs.s_EventId, OnUnloadSceneSuccess);
-            m_EventComponent.Subscribe(UnloadSceneFailureEventArgs.s_EventId, OnUnloadSceneFailure);
 
             if (baseComponent.EditorResourceMode)
             {
@@ -563,127 +541,5 @@ namespace UnityGameFramework.Runtime
             Log.Warning("Unload scene failure, scene asset name '{0}'.", e.SceneAssetName);
             m_EventComponent.Fire(this, UnloadSceneFailureEventArgs.Create(e));
         }
-
-        #region AwaitExtension
-
-        /// <summary>
-        /// 加载场景（可等待）
-        /// </summary>
-        public Task<bool> LoadSceneAsync(string sceneAssetName)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            var isUnLoadScene = s_UnLoadSceneTcs.TryGetValue(sceneAssetName, out var unloadSceneTcs);
-            if (isUnLoadScene)
-            {
-                return unloadSceneTcs.Task;
-            }
-            s_LoadSceneTcs.Add(sceneAssetName, tcs);
-
-            try
-            {
-                LoadScene(sceneAssetName);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e.ToString());
-                tcs.SetException(e);
-                s_LoadSceneTcs.Remove(sceneAssetName);
-            }
-            return tcs.Task;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnLoadSceneSuccess(object sender, GameEventArgs e)
-        {
-            LoadSceneSuccessEventArgs ne = (LoadSceneSuccessEventArgs)e;
-            s_LoadSceneTcs.TryGetValue(ne.SceneAssetName, out var tcs);
-            if (tcs != null)
-            {
-                tcs.SetResult(true);
-                s_LoadSceneTcs.Remove(ne.SceneAssetName);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnLoadSceneFailure(object sender, GameEventArgs e)
-        {
-            LoadSceneFailureEventArgs ne = (LoadSceneFailureEventArgs)e;
-            s_LoadSceneTcs.TryGetValue(ne.SceneAssetName, out var tcs);
-            if (tcs != null)
-            {
-                Debug.LogError(ne.ErrorMessage);
-                tcs.SetException(new GameFrameworkException(ne.ErrorMessage));
-                s_LoadSceneTcs.Remove(ne.SceneAssetName);
-            }
-        }
-
-        /// <summary>
-        /// 卸载场景（可等待）
-        /// </summary>
-        public Task<bool> UnLoadSceneAsync(string sceneAssetName)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            var isLoadSceneTcs = s_LoadSceneTcs.TryGetValue(sceneAssetName, out var loadSceneTcs);
-            if (isLoadSceneTcs)
-            {
-                Debug.Log("Unload  loading scene");
-                return loadSceneTcs.Task;
-            }
-            s_UnLoadSceneTcs.Add(sceneAssetName, tcs);
-            try
-            {
-                UnloadScene(sceneAssetName);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e.ToString());
-                tcs.SetException(e);
-                s_UnLoadSceneTcs.Remove(sceneAssetName);
-            }
-            return tcs.Task;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnUnloadSceneSuccess(object sender, GameEventArgs e)
-        {
-            UnloadSceneSuccessEventArgs ne = (UnloadSceneSuccessEventArgs)e;
-            s_UnLoadSceneTcs.TryGetValue(ne.SceneAssetName, out var tcs);
-            if (tcs != null)
-            {
-                tcs.SetResult(true);
-                s_UnLoadSceneTcs.Remove(ne.SceneAssetName);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnUnloadSceneFailure(object sender, GameEventArgs e)
-        {
-            UnloadSceneFailureEventArgs ne = (UnloadSceneFailureEventArgs)e;
-            s_UnLoadSceneTcs.TryGetValue(ne.SceneAssetName, out var tcs);
-            if (tcs != null)
-            {
-                Debug.LogError($"Unload scene {ne.SceneAssetName} failure.");
-                tcs.SetException(new GameFrameworkException($"Unload scene {ne.SceneAssetName} failure."));
-                s_UnLoadSceneTcs.Remove(ne.SceneAssetName);
-            }
-        }
-
-        #endregion
     }
 }

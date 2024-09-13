@@ -12,7 +12,6 @@ using GameFramework.ObjectPool;
 using GameFramework.Resource;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace UnityGameFramework.Runtime
@@ -1664,66 +1663,5 @@ namespace UnityGameFramework.Runtime
         {
             m_EventComponent.Fire(this, ResourceUpdateAllCompleteEventArgs.Create(e));
         }
-
-        #region AwaitExtension
-        /// <summary>
-        /// 加载资源（可等待）
-        /// </summary>
-        public Task<T> LoadAssetAsync<T>(string assetName)
-            where T : UnityEngine.Object
-        {
-            TaskCompletionSource<T> loadAssetTcs = new TaskCompletionSource<T>();
-            LoadAsset(assetName, typeof(T), new LoadAssetCallbacks(
-                (tempAssetName, asset, duration, userdata) =>
-                {
-                    var source = loadAssetTcs;
-                    loadAssetTcs = null;
-                    T tAsset = asset as T;
-                    if (tAsset != null)
-                    {
-                        source.SetResult(tAsset);
-                    }
-                    else
-                    {
-                        Debug.LogError($"Load asset failure load type is {asset.GetType()} but asset type is {typeof(T)}.");
-                        source.SetException(new GameFrameworkException(
-                            $"Load asset failure load type is {asset.GetType()} but asset type is {typeof(T)}."));
-                    }
-                },
-                (tempAssetName, status, errorMessage, userdata) =>
-                {
-                    Debug.LogError(errorMessage);
-                    loadAssetTcs.SetException(new GameFrameworkException(errorMessage));
-                }
-            ));
-
-            return loadAssetTcs.Task;
-        }
-
-        /// <summary>
-        /// 加载多个资源（可等待）
-        /// </summary>
-        public async Task<T[]> LoadAssetsAsync<T>(string[] assetName) where T : UnityEngine.Object
-        {
-            if (assetName == null)
-            {
-                return null;
-            }
-            T[] assets = new T[assetName.Length];
-            Task<T>[] tasks = new Task<T>[assets.Length];
-            for (int i = 0; i < tasks.Length; i++)
-            {
-                tasks[i] = LoadAssetAsync<T>(assetName[i]);
-            }
-
-            await Task.WhenAll(tasks);
-            for (int i = 0; i < assets.Length; i++)
-            {
-                assets[i] = tasks[i].Result;
-            }
-
-            return assets;
-        }
-        #endregion
     }
 }
