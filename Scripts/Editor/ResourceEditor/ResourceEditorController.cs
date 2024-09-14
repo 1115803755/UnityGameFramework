@@ -333,16 +333,16 @@ namespace UnityGameFramework.Editor.ResourceTools
                 }
 
                 xmlElement = xmlDocument.CreateElement("SourceAssetUnionTypeFilter");
-                xmlElement.InnerText = SourceAssetUnionTypeFilter ?? string.Empty;
+                xmlElement.InnerText = SourceAssetUnionTypeFilter ?? string.Empty;//t:Scene t:Prefab t:Shader t:Model t:Material t:Texture t:AudioClip t:AnimationClip t:AnimatorController t:Font t:TextAsset t:ScriptableObject
                 xmlSettings.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("SourceAssetUnionLabelFilter");
-                xmlElement.InnerText = SourceAssetUnionLabelFilter ?? string.Empty;
+                xmlElement.InnerText = SourceAssetUnionLabelFilter ?? /*string.Empty;*/"l:ResourceInclusive";
                 xmlSettings.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("SourceAssetExceptTypeFilter");
-                xmlElement.InnerText = SourceAssetExceptTypeFilter ?? string.Empty;
+                xmlElement.InnerText = SourceAssetExceptTypeFilter ?? /*string.Empty;*/"t:Script";
                 xmlSettings.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("SourceAssetExceptLabelFilter");
-                xmlElement.InnerText = SourceAssetExceptLabelFilter ?? string.Empty;
+                xmlElement.InnerText = SourceAssetExceptLabelFilter ?? /*string.Empty;*/"l:ResourceExclusive";
                 xmlSettings.AppendChild(xmlElement);
                 xmlElement = xmlDocument.CreateElement("AssetSorter");
                 xmlElement.InnerText = AssetSorter.ToString();
