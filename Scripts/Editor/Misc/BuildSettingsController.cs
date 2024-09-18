@@ -60,6 +60,9 @@ namespace UnityGameFramework.Editor
 
             try
             {
+                defaultScenes.Clear();
+                searchScenePaths.Clear();
+
                 XmlDocument xmlDocument = new XmlDocument();
                 xmlDocument.Load(m_ConfigurationPath);
                 XmlNode xmlRoot = xmlDocument.SelectSingleNode("UnityGameFramework");
