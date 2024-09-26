@@ -17774,12 +17774,12 @@
         </member>
         <member name="F:GameFramework.Resource.ResourceManager.RemoteVersionListFileName">
             <summary>
-            远端最新的资源映射信息
+            远端最新的资源映射信息(单机模式下该文件是随包资源)
             </summary>
         </member>
         <member name="F:GameFramework.Resource.ResourceManager.LocalVersionListFileName">
             <summary>
-            本地apk中的资源映射信息（便于与RemoteVersionListFileName对比做更新）
+            本地apk中的资源映射信息（便于与RemoteVersionListFileName对比做更新，仅非package且可更新模式下才用到）
             </summary>
         </member>
         <member name="F:GameFramework.Resource.ResourceManager.m_AssetInfos">
