@@ -17477,7 +17477,17 @@
         </member>
         <member name="T:GameFramework.Resource.PackageVersionList.Resource">
             <summary>
-            资源。
+            资源。(对应ab包资源信息)
+            </summary>
+        </member>
+        <member name="F:GameFramework.Resource.PackageVersionList.Resource.m_Name">
+            <summary>
+            ab包名称
+            </summary>
+        </member>
+        <member name="F:GameFramework.Resource.PackageVersionList.Resource.m_AssetIndexes">
+            <summary>
+            ab包包含的资源索引列表（从<see cref="F:GameFramework.Resource.PackageVersionList.m_Assets"/>获取实际资源信息）
             </summary>
         </member>
         <member name="M:GameFramework.Resource.PackageVersionList.Resource.#ctor(System.String,System.String,System.String,System.Byte,System.Int32,System.Int32,System.Int32[])">
@@ -17753,7 +17763,7 @@
         </member>
         <member name="P:GameFramework.Resource.ResourceManager.AssetInfo.ResourceName">
             <summary>
-            获取所在资源名称。
+            获取所在资源名称。（ab包名称）
             </summary>
         </member>
         <member name="M:GameFramework.Resource.ResourceManager.AssetInfo.GetDependencyAssetNames">
@@ -17761,6 +17771,21 @@
             获取依赖资源名称。
             </summary>
             <returns>依赖资源名称。</returns>
+        </member>
+        <member name="F:GameFramework.Resource.ResourceManager.RemoteVersionListFileName">
+            <summary>
+            远端最新的资源映射信息
+            </summary>
+        </member>
+        <member name="F:GameFramework.Resource.ResourceManager.LocalVersionListFileName">
+            <summary>
+            本地apk中的资源映射信息（便于与RemoteVersionListFileName对比做更新）
+            </summary>
+        </member>
+        <member name="F:GameFramework.Resource.ResourceManager.m_AssetInfos">
+            <summary>
+            缓存资源对应的信息列表
+            </summary>
         </member>
         <member name="M:GameFramework.Resource.ResourceManager.#ctor">
             <summary>
@@ -18702,6 +18727,26 @@
             </summary>
             <param name="currentVariant">当前使用的变体。</param>
             <param name="ignoreOtherVariant">是否忽略处理其它变体的资源，若不忽略，将会移除其它变体的资源。</param>
+        </member>
+        <member name="M:GameFramework.Resource.ResourceManager.ResourceChecker.OnLoadReadOnlyVersionListSuccess(System.String,System.Byte[],System.Single,System.Object)">
+            <summary>
+            从只读目录中获取资源版本文件用作更新检查
+            </summary>
+            <param name="fileUri"></param>
+            <param name="bytes"></param>
+            <param name="duration"></param>
+            <param name="userData"></param>
+            <exception cref="T:GameFramework.GameFrameworkException"></exception>
+        </member>
+        <member name="M:GameFramework.Resource.ResourceManager.ResourceChecker.OnLoadReadWriteVersionListSuccess(System.String,System.Byte[],System.Single,System.Object)">
+            <summary>
+            从读写目录中获取资源版本文件用作更新检查
+            </summary>
+            <param name="fileUri"></param>
+            <param name="bytes"></param>
+            <param name="duration"></param>
+            <param name="userData"></param>
+            <exception cref="T:GameFramework.GameFrameworkException"></exception>
         </member>
         <member name="T:GameFramework.Resource.ResourceManager.ResourceGroup">
             <summary>
